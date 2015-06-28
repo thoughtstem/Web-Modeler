@@ -10,7 +10,7 @@ var routes = require('./routes/index');
 var app = express();
 
 // view engine setup
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/views'));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));

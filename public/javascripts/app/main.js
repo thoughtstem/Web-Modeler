@@ -99,8 +99,6 @@ define(["lib/jquery", "lib/three"],
                 $(document).bind("keydown", self.onDocumentKeyDown);
                 $(document).bind("keyup", self.onDocumentKeyUp);
                 $(window).bind("resize", self.onWindowResize);
-
-                console.log("setup complete " + self.mouse.toString());
                 self.render();
             };
 
@@ -113,7 +111,6 @@ define(["lib/jquery", "lib/three"],
 
             self.onDocumentMouseMove = function (event) {
                 event.preventDefault();
-                console.log("move " + self.mouse);
 
                 self.mouse.set(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
 
