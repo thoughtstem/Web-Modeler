@@ -5,6 +5,7 @@
 define(
     ["lib/jquery", "lib/three"],
     function () {
+        //TODO: Box should extend Entity
         var Box = function () {
             this.position = new THREE.Vector3(0, 0, 0);
             this.rotation = new THREE.Quaternion();

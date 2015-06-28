@@ -3,11 +3,12 @@
  * Created by Henry on 6/27/2015.
  */
 define([
+        "app/world",
         "lib/orbitcontrols",
         "lib/jquery",
         "lib/three"
     ],
-    function () {
+    function (World) {
         /**
          * Main is a singleton class.
          * @constructor
@@ -19,12 +20,6 @@ define([
              * @type {Main}
              */
             var self = this;
-
-            /**
-             * An array of objects in the world.
-             * @type {Array}
-             */
-            self.objects = [];
 
             /**
              * Called when the Main singleton is initialized.
@@ -49,6 +44,11 @@ define([
                     .addClass("ui")
                     .addClass("panel")
                     .append(
+                    $("<div>")
+                        .append($("<h4>").html("Input Control"))
+                        .append($("<p>").html("Middle - Rotate"))
+                )
+                    .append(
                     $("<button>")
                         .attr("type", "button")
                         .addClass("btn")
@@ -57,6 +57,16 @@ define([
                         $("<span>")
                             .addClass("glyphicon")
                             .addClass("glyphicon-plus")
+                    )
+                ).append(
+                    $("<button>")
+                        .attr("type", "button")
+                        .addClass("btn")
+                        .addClass("btn-default")
+                        .append(
+                        $("<span>")
+                            .addClass("glyphicon")
+                            .addClass("glyphicon-pencil")
                     )
                 )
                     .appendTo(self.container);
@@ -73,7 +83,6 @@ define([
                 self.scene = new THREE.Scene();
 
                 // roll-over helpers
-
                 var rollOverGeo = new THREE.BoxGeometry(50, 50, 50);
                 self.rollOverMaterial = new THREE.MeshBasicMaterial({color: 0xff0000, opacity: 0.5, transparent: true});
                 self.rollOverMesh = new THREE.Mesh(rollOverGeo, self.rollOverMaterial);
@@ -113,7 +122,7 @@ define([
                 self.plane.visible = false;
                 self.scene.add(self.plane);
 
-                self.objects.push(self.plane);
+                World.objects.push(self.plane);
 
                 // Lights
                 var ambientLight = new THREE.AmbientLight(0x606060);
@@ -158,7 +167,7 @@ define([
                     self.camera.lookAt(new THREE.Vector3());
                     self.raycaster.setFromCamera(self.mouse, self.camera);
 
-                    var intersects = self.raycaster.intersectObjects(self.objects);
+                    var intersects = self.raycaster.intersectObjects(World.objects);
 
                     if (intersects.length > 0) {
                         var intersect = intersects[0];
@@ -180,8 +189,7 @@ define([
                 }
                 else {
                     self.raycaster.setFromCamera(self.mouse, self.camera);
-
-                    var intersects = self.raycaster.intersectObjects(self.objects);
+                    var intersects = self.raycaster.intersectObjects(World.objects);
 
                     if (intersects.length > 0) {
                         var intersect = intersects[0];
@@ -190,7 +198,7 @@ define([
                             // delete cube
                             if (intersect.object != self.plane) {
                                 self.scene.remove(intersect.object);
-                                self.objects.splice(self.objects.indexOf(intersect.object), 1);
+                                World.objects.splice(World.objects.indexOf(intersect.object), 1);
                             }
                         } else {
                             // create cube
@@ -199,7 +207,7 @@ define([
                             voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
                             self.scene.add(voxel);
 
-                            self.objects.push(voxel);
+                            World.objects.push(voxel);
 
                         }
 

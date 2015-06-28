@@ -3,7 +3,7 @@
 body {
     font-family: 'Open Sans', sans-serif;
     background-color: #f0f0f0;
-    font-size: 18px;
+    font-size: 14px;
     margin: 0;
     overflow: hidden;
 }
@@ -23,10 +23,10 @@ body {
     transform: translate(0, -50%);
     right: 15px;
     height: 60%;
-    width: 80px;
+    width: 125px;
     box-shadow: 0 0 5px black;
 }
 
-.panel * {
+.panel > button {
     margin: 5px;
 }
