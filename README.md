@@ -12,15 +12,11 @@ Voxel Modeler is a simple web-based modeling software intended to be used to cre
 * Bone Animation
 
 ## Dependencies
-#### Front End
-JavaScript
 
+* Node.js
 * Three.js https://github.com/mrdoob/three.js
 * Require.js
 * Underscore.js
 
 Based on the following code:
 https://github.com/mrdoob/three.js/blob/5c7e0df9b100ba40cdcaaf530196290e16c34858/examples/canvas_interactive_voxelpainter.html
-
-#### Back End
-Ruby on Rails
