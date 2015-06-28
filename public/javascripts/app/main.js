@@ -7,7 +7,7 @@ define([
         "lib/jquery",
         "lib/three"
     ],
-    function (OrbitControls) {
+    function () {
         /**
          * Main is a singleton class.
          * @constructor
@@ -34,16 +34,37 @@ define([
                 document.body.appendChild(self.container);
 
                 /**
-                 * Draw header information.
+                 * Draw user interface.
                  */
-                var info = document.createElement('div');
-                info.style.position = 'absolute';
-                info.style.top = '10px';
-                info.style.width = '100%';
-                info.style.textAlign = 'center';
-                info.innerHTML = 'Voxel Modeler<br><strong>click</strong>: add voxel, <strong>shift + click</strong>: remove voxel';
-                self.container.appendChild(info);
+                $("<div>")
+                    .addClass("ui")
+                    .addClass("header")
+                    .append(
+                    $("<h1>")
+                        .html("Voxel Modeler")
+                )
+                    .appendTo(self.container);
 
+                $("<div>")
+                    .addClass("ui")
+                    .addClass("panel")
+                    .append(
+                    $("<button>")
+                        .attr("type", "button")
+                        .addClass("btn")
+                        .addClass("btn-default")
+                        .append(
+                        $("<span>")
+                            .addClass("glyphicon")
+                            .addClass("glyphicon-plus")
+                    )
+                )
+                    .appendTo(self.container);
+
+                /**
+                 * Create Camera
+                 * @type {THREE.PerspectiveCamera}
+                 */
                 self.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
                 self.camera.position.set(500, 800, 1300);
                 self.camera.lookAt(new THREE.Vector3());

@@ -1,6 +1,32 @@
-body  {
-  font-family: Monospace;
-  background-color: #f0f0f0;
-  margin: 0px;
-  overflow: hidden;
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f0f0f0;
+    font-size: 18px;
+    margin: 0;
+    overflow: hidden;
+}
+
+.ui {
+    position: absolute;
+    text-align: center;
+}
+
+.header {
+    top: 10px;
+    width: 100%;
+}
+
+.panel {
+    top: 50%;
+    transform: translate(0, -50%);
+    right: 15px;
+    height: 60%;
+    width: 80px;
+    box-shadow: 0 0 5px black;
+}
+
+.panel * {
+    margin: 5px;
 }

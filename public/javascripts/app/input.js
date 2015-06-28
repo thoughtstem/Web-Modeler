@@ -4,7 +4,7 @@
  */
 define(
     ["lib/jquery", "lib/three"],
-    function ($) {
+    function () {
 
         return {
 
