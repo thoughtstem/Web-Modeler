@@ -14,9 +14,21 @@ define([
          */
         var Main = new function () {
 
+            /**
+             * The self instance
+             * @type {Main}
+             */
             var self = this;
+
+            /**
+             * An array of objects in the world.
+             * @type {Array}
+             */
             self.objects = [];
 
+            /**
+             * Called when the Main singleton is initialized.
+             */
             self.init = function () {
                 self.container = document.createElement('div');
                 document.body.appendChild(self.container);
@@ -47,12 +59,10 @@ define([
                 self.scene.add(self.rollOverMesh);
 
                 // cubes
-
                 self.cubeGeo = new THREE.BoxGeometry(50, 50, 50);
                 self.cubeMaterial = new THREE.MeshLambertMaterial({color: 0xfeb74c, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture("textures/square-outline-textured.png")});
 
                 // grid
-
                 var size = 500, step = 50;
 
                 var Geometry = new THREE.Geometry();
@@ -85,7 +95,6 @@ define([
                 self.objects.push(self.plane);
 
                 // Lights
-
                 var ambientLight = new THREE.AmbientLight(0x606060);
                 self.scene.add(ambientLight);
 
@@ -93,6 +102,7 @@ define([
                 directionalLight.position.set(1, 0.75, 0.5).normalize();
                 self.scene.add(directionalLight);
 
+                //Renderer
                 self.renderer = new THREE.WebGLRenderer({antialias: true});
                 self.renderer.setClearColor(0xf0f0f0);
                 self.renderer.setPixelRatio(window.devicePixelRatio);
@@ -121,25 +131,9 @@ define([
             self.onDocumentMouseMove = function (event) {
                 event.preventDefault();
 
-                var preMouse = self.mouse.clone();
                 self.mouse.set(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
 
-                if (self.isMiddleMouseDown) {
-                    /*
-                     var delta = self.mouse.sub(preMouse).normalize().multiplyScalar(0.05);
-                     var euler = new THREE.Euler(delta.x, delta.y, 0, 'ZYX');
-                     var rot = new THREE.Quaternion().setFromEuler(euler);
-                     self.camera.position.applyQuaternion(rot);
-
-                     var theta = -( ( event.clientX - self.mouse.x ) * 0.5 ) + onMouseDownTheta;
-                     var phi = ( ( event.clientY - self.mouse.y ) * 0.5 ) + onMouseDownPhi;
-                     phi = Math.min(180, Math.max(0, phi));
-
-                     self.camera.position.x = radious * Math.sin(theta * Math.PI / 360) * Math.cos(phi * Math.PI / 360);
-                     self.camera.position.y = radious * Math.sin(phi * Math.PI / 360);
-                     self.camera.position.z = radious * Math.cos(theta * Math.PI / 360) * Math.cos(phi * Math.PI / 360);
-                     self.camera.updateMatrix();*/
-                } else {
+                if (!self.isMiddleMouseDown) {
                     self.camera.lookAt(new THREE.Vector3());
                     self.raycaster.setFromCamera(self.mouse, self.camera);
 
