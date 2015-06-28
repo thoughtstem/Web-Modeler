@@ -27,6 +27,7 @@ build/Release
 node_modules
 
 # IntelliJ
+.idea
 *.ipr
 *.iml
 *.iws

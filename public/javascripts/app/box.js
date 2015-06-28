@@ -4,7 +4,7 @@
  */
 define(
     ["lib/jquery", "lib/three"],
-    function ($) {
+    function () {
         var Box = function () {
             this.position = new THREE.Vector3(0, 0, 0);
             this.rotation = new THREE.Quaternion();
