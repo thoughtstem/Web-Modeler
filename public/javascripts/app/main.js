@@ -4,11 +4,13 @@
  */
 define([
         "app/world",
+        "app/input",
+        "lib/underscore",
         "lib/orbitcontrols",
         "lib/jquery",
         "lib/three"
     ],
-    function (World) {
+    function (World, Input) {
         /**
          * Main is a singleton class.
          * @constructor
@@ -20,6 +22,10 @@ define([
              * @type {Main}
              */
             var self = this;
+
+            self.keyMap = {
+                SHIFT: 16
+            }
 
             /**
              * Called when the Main singleton is initialized.
@@ -145,8 +151,6 @@ define([
                 $(document).bind("mousemove", self.onDocumentMouseMove);
                 $(document).bind("mousedown", self.onMouseDown);
                 $(document).bind("mouseup", self.onMouseUp);
-                $(document).bind("keydown", self.onDocumentKeyDown);
-                $(document).bind("keyup", self.onDocumentKeyUp);
                 $(window).bind("resize", self.onWindowResize);
                 self.render();
             };
@@ -194,7 +198,7 @@ define([
                     if (intersects.length > 0) {
                         var intersect = intersects[0];
 
-                        if (self.isShiftDown) {
+                        if (_.contains(Input.pressed, self.keyMap.SHIFT)) {
                             // delete cube
                             if (intersect.object != self.plane) {
                                 self.scene.remove(intersect.object);
@@ -220,23 +224,6 @@ define([
                 if (e.which == 2) {
                     self.isMiddleMouseDown = false;
                 }
-            };
-
-            self.onDocumentKeyDown = function (event) {
-                switch (event.keyCode) {
-                    case 16:
-                        self.isShiftDown = true;
-                        break;
-                }
-            };
-
-            self.onDocumentKeyUp = function (event) {
-                switch (event.keyCode) {
-                    case 16:
-                        self.isShiftDown = false;
-                        break;
-                }
-
             };
 
             self.render = function () {

@@ -18,6 +18,21 @@ define(
              */
             self.selected = null;
 
+            /**
+             * A set of pressed keycodes
+             * @type {Array}
+             */
+            self.pressed = [];
+
+            //Bind keys
+            $(document).bind("keydown", function (event) {
+                self.pressed.push(event.keyCode);
+            });
+
+            $(document).bind("keyup", function (event) {
+                self.pressed.splice(array.indexOf(event.keyCode), 1);
+            });
+
 
             /**
              * Does a raytrace to find the object currently hit
