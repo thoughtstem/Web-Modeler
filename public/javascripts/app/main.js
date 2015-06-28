@@ -2,8 +2,12 @@
  * The main application file
  * Created by Henry on 6/27/2015.
  */
-define(["lib/jquery", "lib/three"],
-    function () {
+define([
+        "lib/orbitcontrols",
+        "lib/jquery",
+        "lib/three"
+    ],
+    function (OrbitControls) {
         /**
          * Main is a singleton class.
          * @constructor
@@ -32,11 +36,12 @@ define(["lib/jquery", "lib/three"],
                 self.camera.position.set(500, 800, 1300);
                 self.camera.lookAt(new THREE.Vector3());
 
+
                 self.scene = new THREE.Scene();
 
                 // roll-over helpers
 
-                rollOverGeo = new THREE.BoxGeometry(50, 50, 50);
+                var rollOverGeo = new THREE.BoxGeometry(50, 50, 50);
                 self.rollOverMaterial = new THREE.MeshBasicMaterial({color: 0xff0000, opacity: 0.5, transparent: true});
                 self.rollOverMesh = new THREE.Mesh(rollOverGeo, self.rollOverMaterial);
                 self.scene.add(self.rollOverMesh);
@@ -94,8 +99,12 @@ define(["lib/jquery", "lib/three"],
                 self.renderer.setSize(window.innerWidth, window.innerHeight);
                 self.container.appendChild(self.renderer.domElement);
 
+                //Controls
+                self.controls = new THREE.OrbitControls(self.camera, self.renderer.domElement);
+
                 $(document).bind("mousemove", self.onDocumentMouseMove);
-                $(document).bind("mousedown", self.onDocumentMouseDown);
+                $(document).bind("mousedown", self.onMouseDown);
+                $(document).bind("mouseup", self.onMouseUp);
                 $(document).bind("keydown", self.onDocumentKeyDown);
                 $(document).bind("keyup", self.onDocumentKeyUp);
                 $(window).bind("resize", self.onWindowResize);
@@ -112,55 +121,81 @@ define(["lib/jquery", "lib/three"],
             self.onDocumentMouseMove = function (event) {
                 event.preventDefault();
 
+                var preMouse = self.mouse.clone();
                 self.mouse.set(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
 
-                self.raycaster.setFromCamera(self.mouse, self.camera);
+                if (self.isMiddleMouseDown) {
+                    /*
+                     var delta = self.mouse.sub(preMouse).normalize().multiplyScalar(0.05);
+                     var euler = new THREE.Euler(delta.x, delta.y, 0, 'ZYX');
+                     var rot = new THREE.Quaternion().setFromEuler(euler);
+                     self.camera.position.applyQuaternion(rot);
 
-                var intersects = self.raycaster.intersectObjects(self.objects);
+                     var theta = -( ( event.clientX - self.mouse.x ) * 0.5 ) + onMouseDownTheta;
+                     var phi = ( ( event.clientY - self.mouse.y ) * 0.5 ) + onMouseDownPhi;
+                     phi = Math.min(180, Math.max(0, phi));
 
-                if (intersects.length > 0) {
-                    var intersect = intersects[0];
-                    self.rollOverMesh.position.copy(intersect.point).add(intersect.face.normal);
-                    self.rollOverMesh.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
+                     self.camera.position.x = radious * Math.sin(theta * Math.PI / 360) * Math.cos(phi * Math.PI / 360);
+                     self.camera.position.y = radious * Math.sin(phi * Math.PI / 360);
+                     self.camera.position.z = radious * Math.cos(theta * Math.PI / 360) * Math.cos(phi * Math.PI / 360);
+                     self.camera.updateMatrix();*/
+                } else {
+                    self.camera.lookAt(new THREE.Vector3());
+                    self.raycaster.setFromCamera(self.mouse, self.camera);
+
+                    var intersects = self.raycaster.intersectObjects(self.objects);
+
+                    if (intersects.length > 0) {
+                        var intersect = intersects[0];
+                        self.rollOverMesh.position.copy(intersect.point).add(intersect.face.normal);
+                        self.rollOverMesh.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
+                    }
                 }
 
                 self.render();
             };
 
-            self.onDocumentMouseDown = function (event) {
+            self.onMouseDown = function (event) {
                 event.preventDefault();
 
                 self.mouse.set(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
 
-                self.raycaster.setFromCamera(self.mouse, self.camera);
-
-                var intersects = self.raycaster.intersectObjects(self.objects);
-
-                if (intersects.length > 0) {
-
-                    var intersect = intersects[0];
-
-                    if (self.isShiftDown) {
-                        // delete cube
-                        if (intersect.object != self.plane) {
-                            self.scene.remove(intersect.object);
-                            self.objects.splice(self.objects.indexOf(intersect.object), 1);
-                        }
-                    } else {
-                        // create cube
-                        var voxel = new THREE.Mesh(self.cubeGeo, self.cubeMaterial);
-                        voxel.position.copy(intersect.point).add(intersect.face.normal);
-                        voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
-                        self.scene.add(voxel);
-
-                        self.objects.push(voxel);
-
-                    }
-
-                    self.render();
+                if (event.which == 2) {
+                    self.isMiddleMouseDown = true;
                 }
+                else {
+                    self.raycaster.setFromCamera(self.mouse, self.camera);
 
-                if ((event.which == 2)) {
+                    var intersects = self.raycaster.intersectObjects(self.objects);
+
+                    if (intersects.length > 0) {
+                        var intersect = intersects[0];
+
+                        if (self.isShiftDown) {
+                            // delete cube
+                            if (intersect.object != self.plane) {
+                                self.scene.remove(intersect.object);
+                                self.objects.splice(self.objects.indexOf(intersect.object), 1);
+                            }
+                        } else {
+                            // create cube
+                            var voxel = new THREE.Mesh(self.cubeGeo, self.cubeMaterial);
+                            voxel.position.copy(intersect.point).add(intersect.face.normal);
+                            voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
+                            self.scene.add(voxel);
+
+                            self.objects.push(voxel);
+
+                        }
+
+                        self.render();
+                    }
+                }
+            };
+
+            self.onMouseUp = function (e) {
+                if (e.which == 2) {
+                    self.isMiddleMouseDown = false;
                 }
             };
 
