@@ -1,10 +1,13 @@
-declare var require:any;
+///<reference path="typings/jquery/jquery.d.ts" />
+///<reference path="typings/threejs/three.d.ts" />
+
 /**
  * The UI and World renderer
  * Created by Henry on 6/28/2015.
  */
-var $ = require("./lib/jquery.js");
-var THREE = require("./lib/three.js");
+import $ = require("jquery");
+import THREE = require("three");
+import Main = require("./main");
 
 var Renderer = new function () {
     var self = this;
@@ -24,7 +27,6 @@ var Renderer = new function () {
      * Renders the user interface.
      */
     self.renderUI = function () {
-        var Main = require("./main.js");
         $("<div>")
             .addClass("ui")
             .addClass("header")
@@ -52,7 +54,7 @@ var Renderer = new function () {
                     .addClass("glyphicon")
                     .addClass("glyphicon-plus")
             )
-                .click(Main.onAdd)
+                .click(Main.instance.onAdd)
         ).append(
             $("<button>")
                 .attr("type", "button")
@@ -71,9 +73,8 @@ var Renderer = new function () {
      * Renders the world.
      */
     self.renderWorld = function () {
-        var Main = require("./main.js");
-        self.renderer.render(Main.scene, Main.camera);
+        self.renderer.render(Main.instance.scene, Main.instance.camera);
     };
 };
 
-module.exports = Renderer;
+export = Renderer;

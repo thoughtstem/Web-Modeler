@@ -14,9 +14,8 @@
 //    Orbit - left mouse / touch: one finger move
 //    Zoom - middle mouse, or mousewheel / touch: two finger spread or squish
 //    Pan - right mouse, or arrow keys / touch: three finter swipe
-var THREE = require("./three.js");
 
-var OrbitControls = function (object, domElement) {
+THREE.OrbitControls = function (object, domElement) {
 
     this.object = object;
     this.domElement = ( domElement !== undefined ) ? domElement : document;
@@ -75,7 +74,7 @@ var OrbitControls = function (object, domElement) {
     this.keys = {LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40};
 
     // Mouse buttons
-    this.mouseButtons = {ORBIT: THREE.MOUSE.MIDDLE, ZOOM: 3, PAN: 3};
+    this.mouseButtons = {ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT};
 
     ////////////
     // internals
@@ -705,7 +704,5 @@ var OrbitControls = function (object, domElement) {
 
 };
 
-OrbitControls.prototype = Object.create(THREE.EventDispatcher.prototype);
-OrbitControls.prototype.constructor = OrbitControls;
-
-module.exports = OrbitControls;
+THREE.OrbitControls.prototype = Object.create(THREE.EventDispatcher.prototype);
+THREE.OrbitControls.prototype.constructor = THREE.OrbitControls;

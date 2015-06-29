@@ -1,25 +1,21 @@
-declare var require:any;
+//<reference path="typings/threejs/three.d.ts">
+
 /**
  * A box represents a rotatable cuboid
  * Created by Henry on 6/27/2015.
  */
-var THREE = require("./lib/three.js");
+import THREE = require("three");
+import Main = require("./main");
 
 //TODO: Box should extend Mesh
-var Box = function () {
-    var self = this;
+class Box extends THREE.Object3D {
+    pivot = new THREE.Vector3();
 
-    self.pivot = new THREE.Vector3();
-
-    self.getMesh = function () {
-        var Main = require("./main.js");
-        var mesh = new THREE.Mesh(Main.cubeGeo, Main.cubeMaterial);
-        mesh.position.copy(self.position);
+    getMesh() {
+        var mesh = new THREE.Mesh(Main.instance.cubeGeo, Main.instance.cubeMaterial);
+        mesh.position.copy(this.position);
         return mesh;
-    };
-};
+    }
+}
 
-Box.prototype = THREE.Object3D.prototype;
-Box.prototype.constructor = Box;
-
-module.exports = Box;
+export = Box;

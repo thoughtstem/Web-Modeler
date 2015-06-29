@@ -1,14 +1,15 @@
-declare var require:any;
-declare var module:any;
-
+//<reference path="typings/threejs/three.d.ts">
+//<reference path="typings/threejs/three-orbitcontrols.d.ts">
+//<reference path="typings/jquery/jquery.d.ts">
+//<reference path="typings/underscore/underscore.d.ts">
 /**
  * Static singleton class that handle inputs
  * Created by Henry on 6/27/2015.
  */
-var $ = require("./lib/jquery.js");
-var _ = require("./lib/underscore.js");
-var Main = require("./main.js");
-var World = require("./world.js");
+import $ = require("jquery");
+import _ = require("underscore");
+import Main = require("./main");
+import World = require("./world");
 
 var Input = new function () {
     var self = this;
@@ -40,7 +41,7 @@ var Input = new function () {
      * @returns {Entity} The hit entity
      */
     self.getHit = function () {
-        Main.raycaster.setFromCamera(self.mouse, self.camera);
+        Main.instance.raycaster.setFromCamera(self.mouse, self.camera);
         var intersects = self.raycaster.intersectObjects(World.objects);
 
         if (intersects.length > 0) {
@@ -51,4 +52,4 @@ var Input = new function () {
     }
 };
 
-module.exports = Input;
+export = Input;

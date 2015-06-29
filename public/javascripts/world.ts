@@ -1,10 +1,12 @@
-declare var require:any;
+//<reference path="typings/threejs/three.d.ts">
+
 /**
  * The World singleton object that defines the world space
  * Created by Henry on 6/27/2015.
  */
-var THREE = require("./lib/three.js");
-var Box = require("./box.js");
+import THREE = require("three");
+import Box = require("./box");
+import Main = require("./main");
 
 var World = new function () {
     var self = this;
@@ -23,10 +25,9 @@ var World = new function () {
         self.objects.push(obj3D);
 
         if (obj3D instanceof Box) {
-            var Main = require("./main.js");
-            Main.scene.add(obj3D.getMesh());
+            Main.instance.scene.add(obj3D.getMesh());
         }
     };
 };
 
-module.exports = World;
+export = World;
