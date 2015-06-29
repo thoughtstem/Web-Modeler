@@ -6,7 +6,6 @@
  */
 //var Detector = require("./lib/detector.js");
 //var Main = require("./main.ts");
-if (!Detector.webgl)
-    Detector.addGetWebGLMessage();
+
+if (!Detector.webgl) Detector.addGetWebGLMessage();
 Main.init();
-//# sourceMappingURL=entry.js.map

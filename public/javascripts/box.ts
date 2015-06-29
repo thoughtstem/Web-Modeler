@@ -1,3 +1,4 @@
+declare var require:any;
 /**
  * A box represents a rotatable cuboid
  * Created by Henry on 6/27/2015.

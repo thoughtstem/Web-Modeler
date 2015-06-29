@@ -1,3 +1,4 @@
+declare var require:any;
 /**
  * The World singleton object that defines the world space
  * Created by Henry on 6/27/2015.

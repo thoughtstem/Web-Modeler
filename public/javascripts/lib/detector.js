@@ -16,7 +16,6 @@ var Detector = {
     fileapi: window.File && window.FileReader && window.FileList && window.Blob,
 
     getWebGLErrorMessage: function () {
-
         var element = document.createElement('div');
         element.id = 'webgl-error-message';
         element.style.fontFamily = 'monospace';
@@ -42,11 +41,9 @@ var Detector = {
         }
 
         return element;
-
     },
 
     addGetWebGLMessage: function (parameters) {
-
         var parent, id, element;
 
         parameters = parameters || {};
@@ -61,5 +58,3 @@ var Detector = {
 
     }
 };
-
-module.exports = Detector;

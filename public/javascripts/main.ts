@@ -1,3 +1,4 @@
+declare var require:any;
 /**
  * The Main singleton object.
  * Created by Henry on 6/27/2015.

@@ -1,3 +1,4 @@
+declare var require:any;
 /**
  * The UI and World renderer
  * Created by Henry on 6/28/2015.
