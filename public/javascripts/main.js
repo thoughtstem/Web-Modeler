@@ -9,6 +9,7 @@ var World = require("./world.js");
 var Input = require("./input.js");
 var Renderer = require("./renderer.js");
 var OrbitControls = require("./lib/orbitcontrols.js");
+var Box = require("./box.js");
 
 var Main = new function () {
 
@@ -74,7 +75,7 @@ var Main = new function () {
         self.plane.visible = false;
         self.scene.add(self.plane);
 
-        World.entities.push(self.plane);
+        World.objects.push(self.plane);
 
         // Lights
         var ambientLight = new THREE.AmbientLight(0x606060);
@@ -92,6 +93,7 @@ var Main = new function () {
         $(document).bind("mouseup", self.onMouseUp);
         $(window).bind("resize", self.onWindowResize);
 
+        Renderer.renderUI();
         Renderer.renderWorld();
     };
 
@@ -111,7 +113,7 @@ var Main = new function () {
             self.camera.lookAt(new THREE.Vector3());
             self.raycaster.setFromCamera(self.mouse, self.camera);
 
-            var intersects = self.raycaster.intersectObjects(World.entities);
+            var intersects = self.raycaster.intersectObjects(World.objects);
 
             if (intersects.length > 0) {
                 var intersect = intersects[0];
@@ -133,7 +135,7 @@ var Main = new function () {
         }
         else {
             self.raycaster.setFromCamera(self.mouse, self.camera);
-            var intersects = self.raycaster.intersectObjects(World.entities);
+            var intersects = self.raycaster.intersectObjects(World.objects);
 
             if (intersects.length > 0) {
                 var intersect = intersects[0];
@@ -142,7 +144,7 @@ var Main = new function () {
                     // delete cube
                     if (intersect.object != self.plane) {
                         self.scene.remove(intersect.object);
-                        World.entities.splice(World.entities.indexOf(intersect.object), 1);
+                        World.objects.splice(World.objects.indexOf(intersect.object), 1);
                     }
                 } else {
                     // create cube
@@ -151,7 +153,7 @@ var Main = new function () {
                     voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
                     self.scene.add(voxel);
 
-                    World.entities.push(voxel);
+                    World.objects.push(voxel);
 
                 }
 
@@ -164,6 +166,15 @@ var Main = new function () {
         if (e.which == 2) {
             self.isMiddleMouseDown = false;
         }
+    };
+
+    /**
+     * Called when the add button is clicked.
+     */
+    self.onAdd = function () {
+        var box = new Box();
+        box.position = new THREE.Vector3();
+        World.add(box)
     };
 };
 

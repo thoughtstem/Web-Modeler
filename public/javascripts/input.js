@@ -38,7 +38,7 @@ var Input = new function () {
      */
     self.getHit = function () {
         Main.raycaster.setFromCamera(self.mouse, self.camera);
-        var intersects = self.raycaster.intersectObjects(world.entities);
+        var intersects = self.raycaster.intersectObjects(world.objects);
 
         if (intersects.length > 0) {
             return intersects[0];

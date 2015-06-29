@@ -4,7 +4,6 @@
  */
 var $ = require("./lib/jquery.js");
 var THREE = require("./lib/three.js");
-var Main = require("./main.js");
 
 var Renderer = new function () {
     var self = this;
@@ -24,6 +23,7 @@ var Renderer = new function () {
      * Renders the user interface.
      */
     self.renderUI = function () {
+        var Main = require("./main.js");
         $("<div>")
             .addClass("ui")
             .addClass("header")
@@ -51,7 +51,7 @@ var Renderer = new function () {
                     .addClass("glyphicon")
                     .addClass("glyphicon-plus")
             )
-            //.bind("click", Main.)
+                .click(Main.onAdd)
         ).append(
             $("<button>")
                 .attr("type", "button")
@@ -70,11 +70,9 @@ var Renderer = new function () {
      * Renders the world.
      */
     self.renderWorld = function () {
-        Main = require("./main.js");
+        var Main = require("./main.js");
         self.renderer.render(Main.scene, Main.camera);
     };
 };
-
-Renderer.renderUI();
 
 module.exports = Renderer;

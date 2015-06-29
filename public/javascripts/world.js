@@ -3,24 +3,28 @@
  * Created by Henry on 6/27/2015.
  */
 var THREE = require("./lib/three.js");
+var Box = require("./box.js");
 
 var World = new function () {
     var self = this;
 
-    self.scene = new THREE.Scene();
-
     /**
      * An array of objects in the world.
-     * @type {Entity}
+     * @type {Object3D} A list of Object3D.
      */
-    self.entities = [];
+    self.objects = [];
 
     /**
      * Adds an entity to the world
-     * @param The entity to add
+     * @param {Object3D} The Object3D to add to the world
      */
-    self.add = function (entity) {
-        self.entities.push(entity);
+    self.add = function (obj3D) {
+        self.objects.push(obj3D);
+
+        if (obj3D instanceof Box) {
+            var Main = require("./main.js");
+            Main.scene.add(obj3D.getMesh());
+        }
     };
 };
 

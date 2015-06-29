@@ -386,42 +386,42 @@ THREE.MorphAnimMesh.prototype.clone = function (a) {
 };
 THREE.LOD = function () {
     THREE.Object3D.call(this);
-    this.entities = []
+    this.objects = []
 };
 THREE.LOD.prototype = Object.create(THREE.Object3D.prototype);
 THREE.LOD.prototype.constructor = THREE.LOD;
 THREE.LOD.prototype.addLevel = function (a, b) {
     void 0 === b && (b = 0);
     b = Math.abs(b);
-    for (var c = 0; c < this.entities.length && !(b < this.entities[c].distance); c++);
-    this.entities.splice(c, 0, {distance: b, object: a});
+    for (var c = 0; c < this.objects.length && !(b < this.objects[c].distance); c++);
+    this.objects.splice(c, 0, {distance: b, object: a});
     this.add(a)
 };
 THREE.LOD.prototype.getObjectForDistance = function (a) {
-    for (var b = 1, c = this.entities.length; b < c && !(a < this.entities[b].distance); b++);
-    return this.entities[b - 1].object
+    for (var b = 1, c = this.objects.length; b < c && !(a < this.objects[b].distance); b++);
+    return this.objects[b - 1].object
 };
 THREE.LOD.prototype.raycast=function(){var a=new THREE.Vector3;return function(b,c){a.setFromMatrixPosition(this.matrixWorld);var d=b.ray.origin.distanceTo(a);this.getObjectForDistance(d).raycast(b,c)}}();
 THREE.LOD.prototype.update = function () {
     var a = new THREE.Vector3, b = new THREE.Vector3;
     return function (c) {
-        if (1 < this.entities.length) {
+        if (1 < this.objects.length) {
             a.setFromMatrixPosition(c.matrixWorld);
             b.setFromMatrixPosition(this.matrixWorld);
             c = a.distanceTo(b);
-            this.entities[0].object.visible = !0;
-            for (var d = 1, e = this.entities.length; d < e; d++)if (c >= this.entities[d].distance)this.entities[d - 1].object.visible = !1, this.entities[d].object.visible = !0; else break;
-            for (; d < e; d++)this.entities[d].object.visible = !1
+            this.objects[0].object.visible = !0;
+            for (var d = 1, e = this.objects.length; d < e; d++)if (c >= this.objects[d].distance)this.objects[d - 1].object.visible = !1, this.objects[d].object.visible = !0; else break;
+            for (; d < e; d++)this.objects[d].object.visible = !1
         }
     }
 }();
 THREE.LOD.prototype.clone = function (a) {
     void 0 === a && (a = new THREE.LOD);
     THREE.Object3D.prototype.clone.call(this, a);
-    for (var b = 0, c = this.entities.length; b < c; b++) {
-        var d = this.entities[b].object.clone();
+    for (var b = 0, c = this.objects.length; b < c; b++) {
+        var d = this.objects[b].object.clone();
         d.visible = 0 === b;
-        a.addLevel(d, this.entities[b].distance)
+        a.addLevel(d, this.objects[b].distance)
     }
     return a
 };
