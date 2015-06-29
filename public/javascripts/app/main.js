@@ -1,21 +1,19 @@
 /**
- * The main application file
+ * The Main singleton object.
  * Created by Henry on 6/27/2015.
  */
-define([
+define(
+    [
         "app/world",
         "app/input",
+        "app/renderer",
         "lib/underscore",
-        "lib/orbitcontrols",
         "lib/jquery",
+        "lib/orbitcontrols",
         "lib/three"
     ],
-    function (World, Input) {
-        /**
-         * Main is a singleton class.
-         * @constructor
-         */
-        var Main = new function () {
+    function (World, Input, Renderer) {
+        return new function () {
 
             /**
              * The self instance
@@ -25,58 +23,15 @@ define([
 
             self.keyMap = {
                 SHIFT: 16
-            }
+            };
+
+            self.scene = new THREE.Scene();
 
             /**
              * Called when the Main singleton is initialized.
              */
             self.init = function () {
-                self.container = document.createElement('div');
-                document.body.appendChild(self.container);
-
-                /**
-                 * Draw user interface.
-                 */
-                $("<div>")
-                    .addClass("ui")
-                    .addClass("header")
-                    .append(
-                    $("<h1>")
-                        .html("Voxel Modeler")
-                )
-                    .appendTo(self.container);
-
-                $("<div>")
-                    .addClass("ui")
-                    .addClass("panel")
-                    .append(
-                    $("<div>")
-                        .append($("<h4>").html("Input Control"))
-                        .append($("<p>").html("Middle - Rotate"))
-                )
-                    .append(
-                    $("<button>")
-                        .attr("type", "button")
-                        .addClass("btn")
-                        .addClass("btn-default")
-                        .append(
-                        $("<span>")
-                            .addClass("glyphicon")
-                            .addClass("glyphicon-plus")
-                    )
-                ).append(
-                    $("<button>")
-                        .attr("type", "button")
-                        .addClass("btn")
-                        .addClass("btn-default")
-                        .append(
-                        $("<span>")
-                            .addClass("glyphicon")
-                            .addClass("glyphicon-pencil")
-                    )
-                )
-                    .appendTo(self.container);
-
+                console.log("init " + self.scene);
                 /**
                  * Create Camera
                  * @type {THREE.PerspectiveCamera}
@@ -85,8 +40,6 @@ define([
                 self.camera.position.set(500, 800, 1300);
                 self.camera.lookAt(new THREE.Vector3());
 
-
-                self.scene = new THREE.Scene();
 
                 // roll-over helpers
                 var rollOverGeo = new THREE.BoxGeometry(50, 50, 50);
@@ -98,24 +51,22 @@ define([
                 self.cubeGeo = new THREE.BoxGeometry(50, 50, 50);
                 self.cubeMaterial = new THREE.MeshLambertMaterial({color: 0xfeb74c, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture("textures/square-outline-textured.png")});
 
-                // grid
+                // Draw grid
                 var size = 500, step = 50;
 
-                var Geometry = new THREE.Geometry();
+                var geometry = new THREE.Geometry();
 
                 for (var i = -size; i <= size; i += step) {
+                    geometry.vertices.push(new THREE.Vector3(-size, 0, i));
+                    geometry.vertices.push(new THREE.Vector3(size, 0, i));
 
-                    Geometry.vertices.push(new THREE.Vector3(-size, 0, i));
-                    Geometry.vertices.push(new THREE.Vector3(size, 0, i));
-
-                    Geometry.vertices.push(new THREE.Vector3(i, 0, -size));
-                    Geometry.vertices.push(new THREE.Vector3(i, 0, size));
-
+                    geometry.vertices.push(new THREE.Vector3(i, 0, -size));
+                    geometry.vertices.push(new THREE.Vector3(i, 0, size));
                 }
 
                 var material = new THREE.LineBasicMaterial({color: 0x000000, opacity: 0.2, transparent: true});
 
-                var line = new THREE.Line(Geometry, material, THREE.LinePieces);
+                var line = new THREE.Line(geometry, material, THREE.LinePieces);
                 self.scene.add(line);
 
                 self.raycaster = new THREE.Raycaster();
@@ -128,7 +79,7 @@ define([
                 self.plane.visible = false;
                 self.scene.add(self.plane);
 
-                World.objects.push(self.plane);
+                World.entities.push(self.plane);
 
                 // Lights
                 var ambientLight = new THREE.AmbientLight(0x606060);
@@ -138,28 +89,21 @@ define([
                 directionalLight.position.set(1, 0.75, 0.5).normalize();
                 self.scene.add(directionalLight);
 
-                //Renderer
-                self.renderer = new THREE.WebGLRenderer({antialias: true});
-                self.renderer.setClearColor(0xf0f0f0);
-                self.renderer.setPixelRatio(window.devicePixelRatio);
-                self.renderer.setSize(window.innerWidth, window.innerHeight);
-                self.container.appendChild(self.renderer.domElement);
-
                 //Controls
-                self.controls = new THREE.OrbitControls(self.camera, self.renderer.domElement);
+                self.controls = new THREE.OrbitControls(self.camera, Renderer.renderer.domElement);
 
                 $(document).bind("mousemove", self.onDocumentMouseMove);
                 $(document).bind("mousedown", self.onMouseDown);
                 $(document).bind("mouseup", self.onMouseUp);
                 $(window).bind("resize", self.onWindowResize);
-                self.render();
+                Renderer.renderWorld(World);
             };
 
             self.onWindowResize = function () {
                 self.camera.aspect = window.innerWidth / window.innerHeight;
                 self.camera.updateProjectionMatrix();
 
-                self.renderer.setSize(window.innerWidth, window.innerHeight);
+                Renderer.renderer.setSize(window.innerWidth, window.innerHeight);
             };
 
             self.onDocumentMouseMove = function (event) {
@@ -171,7 +115,7 @@ define([
                     self.camera.lookAt(new THREE.Vector3());
                     self.raycaster.setFromCamera(self.mouse, self.camera);
 
-                    var intersects = self.raycaster.intersectObjects(World.objects);
+                    var intersects = self.raycaster.intersectObjects(World.entities);
 
                     if (intersects.length > 0) {
                         var intersect = intersects[0];
@@ -180,7 +124,7 @@ define([
                     }
                 }
 
-                self.render();
+                Renderer.renderWorld();
             };
 
             self.onMouseDown = function (event) {
@@ -193,7 +137,7 @@ define([
                 }
                 else {
                     self.raycaster.setFromCamera(self.mouse, self.camera);
-                    var intersects = self.raycaster.intersectObjects(World.objects);
+                    var intersects = self.raycaster.intersectObjects(World.entities);
 
                     if (intersects.length > 0) {
                         var intersect = intersects[0];
@@ -202,7 +146,7 @@ define([
                             // delete cube
                             if (intersect.object != self.plane) {
                                 self.scene.remove(intersect.object);
-                                World.objects.splice(World.objects.indexOf(intersect.object), 1);
+                                World.entities.splice(World.entities.indexOf(intersect.object), 1);
                             }
                         } else {
                             // create cube
@@ -211,11 +155,11 @@ define([
                             voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
                             self.scene.add(voxel);
 
-                            World.objects.push(voxel);
+                            World.entities.push(voxel);
 
                         }
 
-                        self.render();
+                        Renderer.renderWorld();
                     }
                 }
             };
@@ -225,12 +169,6 @@ define([
                     self.isMiddleMouseDown = false;
                 }
             };
-
-            self.render = function () {
-                self.renderer.render(self.scene, self.camera);
-            };
         };
-
-        return Main;
     }
 );

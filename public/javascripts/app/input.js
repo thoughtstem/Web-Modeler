@@ -6,6 +6,7 @@ define(
     [
         "app/main",
         "lib/jquery",
+        "lib/underscore",
         "lib/three"
     ],
     function (Main) {
@@ -30,7 +31,7 @@ define(
             });
 
             $(document).bind("keyup", function (event) {
-                self.pressed.splice(array.indexOf(event.keyCode), 1);
+                self.pressed = _.without(self.pressed, event.keyCode);
             });
 
 
@@ -40,7 +41,7 @@ define(
              */
             self.getHit = function () {
                 Main.raycaster.setFromCamera(self.mouse, self.camera);
-                var intersects = self.raycaster.intersectObjects(world.objects);
+                var intersects = self.raycaster.intersectObjects(world.entities);
 
                 if (intersects.length > 0) {
                     return intersects[0];

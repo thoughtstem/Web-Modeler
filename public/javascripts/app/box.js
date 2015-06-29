@@ -3,7 +3,10 @@
  * Created by Henry on 6/27/2015.
  */
 define(
-    ["lib/jquery", "lib/three"],
+    [
+        "lib/jquery",
+        "lib/three"
+    ],
     function () {
         //TODO: Box should extend Entity
         var Box = function () {

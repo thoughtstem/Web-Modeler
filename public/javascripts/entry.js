@@ -5,10 +5,12 @@
 requirejs(
     [
         "lib/detector",
-        "app/main"
+        "app/main",
+        "lib/jquery"
     ],
     function (Detector, Main) {
         if (!Detector.webgl) Detector.addGetWebGLMessage();
         Main.init();
+        $.noConflict(true);
     }
 );

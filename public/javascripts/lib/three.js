@@ -372,11 +372,59 @@ THREE.MorphAnimMesh.prototype.setAnimationLabel=function(a,b,c){this.geometry.an
 THREE.MorphAnimMesh.prototype.updateAnimation=function(a){var b=this.duration/this.length;this.time+=this.direction*a;if(this.mirroredLoop){if(this.time>this.duration||0>this.time)this.direction*=-1,this.time>this.duration&&(this.time=this.duration,this.directionBackwards=!0),0>this.time&&(this.time=0,this.directionBackwards=!1)}else this.time%=this.duration,0>this.time&&(this.time+=this.duration);a=this.startKeyframe+THREE.Math.clamp(Math.floor(this.time/b),0,this.length-1);a!==this.currentKeyframe&&
 (this.morphTargetInfluences[this.lastKeyframe]=0,this.morphTargetInfluences[this.currentKeyframe]=1,this.morphTargetInfluences[a]=0,this.lastKeyframe=this.currentKeyframe,this.currentKeyframe=a);b=this.time%b/b;this.directionBackwards&&(b=1-b);this.morphTargetInfluences[this.currentKeyframe]=b;this.morphTargetInfluences[this.lastKeyframe]=1-b};
 THREE.MorphAnimMesh.prototype.interpolateTargets=function(a,b,c){for(var d=this.morphTargetInfluences,e=0,f=d.length;e<f;e++)d[e]=0;-1<a&&(d[a]=1-c);-1<b&&(d[b]=c)};
-THREE.MorphAnimMesh.prototype.clone=function(a){void 0===a&&(a=new THREE.MorphAnimMesh(this.geometry,this.material));a.duration=this.duration;a.mirroredLoop=this.mirroredLoop;a.time=this.time;a.lastKeyframe=this.lastKeyframe;a.currentKeyframe=this.currentKeyframe;a.direction=this.direction;a.directionBackwards=this.directionBackwards;THREE.Mesh.prototype.clone.call(this,a);return a};THREE.LOD=function(){THREE.Object3D.call(this);this.objects=[]};THREE.LOD.prototype=Object.create(THREE.Object3D.prototype);
-THREE.LOD.prototype.constructor=THREE.LOD;THREE.LOD.prototype.addLevel=function(a,b){void 0===b&&(b=0);b=Math.abs(b);for(var c=0;c<this.objects.length&&!(b<this.objects[c].distance);c++);this.objects.splice(c,0,{distance:b,object:a});this.add(a)};THREE.LOD.prototype.getObjectForDistance=function(a){for(var b=1,c=this.objects.length;b<c&&!(a<this.objects[b].distance);b++);return this.objects[b-1].object};
+THREE.MorphAnimMesh.prototype.clone = function (a) {
+    void 0 === a && (a = new THREE.MorphAnimMesh(this.geometry, this.material));
+    a.duration = this.duration;
+    a.mirroredLoop = this.mirroredLoop;
+    a.time = this.time;
+    a.lastKeyframe = this.lastKeyframe;
+    a.currentKeyframe = this.currentKeyframe;
+    a.direction = this.direction;
+    a.directionBackwards = this.directionBackwards;
+    THREE.Mesh.prototype.clone.call(this, a);
+    return a
+};
+THREE.LOD = function () {
+    THREE.Object3D.call(this);
+    this.entities = []
+};
+THREE.LOD.prototype = Object.create(THREE.Object3D.prototype);
+THREE.LOD.prototype.constructor = THREE.LOD;
+THREE.LOD.prototype.addLevel = function (a, b) {
+    void 0 === b && (b = 0);
+    b = Math.abs(b);
+    for (var c = 0; c < this.entities.length && !(b < this.entities[c].distance); c++);
+    this.entities.splice(c, 0, {distance: b, object: a});
+    this.add(a)
+};
+THREE.LOD.prototype.getObjectForDistance = function (a) {
+    for (var b = 1, c = this.entities.length; b < c && !(a < this.entities[b].distance); b++);
+    return this.entities[b - 1].object
+};
 THREE.LOD.prototype.raycast=function(){var a=new THREE.Vector3;return function(b,c){a.setFromMatrixPosition(this.matrixWorld);var d=b.ray.origin.distanceTo(a);this.getObjectForDistance(d).raycast(b,c)}}();
-THREE.LOD.prototype.update=function(){var a=new THREE.Vector3,b=new THREE.Vector3;return function(c){if(1<this.objects.length){a.setFromMatrixPosition(c.matrixWorld);b.setFromMatrixPosition(this.matrixWorld);c=a.distanceTo(b);this.objects[0].object.visible=!0;for(var d=1,e=this.objects.length;d<e;d++)if(c>=this.objects[d].distance)this.objects[d-1].object.visible=!1,this.objects[d].object.visible=!0;else break;for(;d<e;d++)this.objects[d].object.visible=!1}}}();
-THREE.LOD.prototype.clone=function(a){void 0===a&&(a=new THREE.LOD);THREE.Object3D.prototype.clone.call(this,a);for(var b=0,c=this.objects.length;b<c;b++){var d=this.objects[b].object.clone();d.visible=0===b;a.addLevel(d,this.objects[b].distance)}return a};
+THREE.LOD.prototype.update = function () {
+    var a = new THREE.Vector3, b = new THREE.Vector3;
+    return function (c) {
+        if (1 < this.entities.length) {
+            a.setFromMatrixPosition(c.matrixWorld);
+            b.setFromMatrixPosition(this.matrixWorld);
+            c = a.distanceTo(b);
+            this.entities[0].object.visible = !0;
+            for (var d = 1, e = this.entities.length; d < e; d++)if (c >= this.entities[d].distance)this.entities[d - 1].object.visible = !1, this.entities[d].object.visible = !0; else break;
+            for (; d < e; d++)this.entities[d].object.visible = !1
+        }
+    }
+}();
+THREE.LOD.prototype.clone = function (a) {
+    void 0 === a && (a = new THREE.LOD);
+    THREE.Object3D.prototype.clone.call(this, a);
+    for (var b = 0, c = this.entities.length; b < c; b++) {
+        var d = this.entities[b].object.clone();
+        d.visible = 0 === b;
+        a.addLevel(d, this.entities[b].distance)
+    }
+    return a
+};
 THREE.Sprite=function(){var a=new Uint16Array([0,1,2,0,2,3]),b=new Float32Array([-.5,-.5,0,.5,-.5,0,.5,.5,0,-.5,.5,0]),c=new Float32Array([0,0,1,0,1,1,0,1]),d=new THREE.BufferGeometry;d.addAttribute("index",new THREE.BufferAttribute(a,1));d.addAttribute("position",new THREE.BufferAttribute(b,3));d.addAttribute("uv",new THREE.BufferAttribute(c,2));return function(a){THREE.Object3D.call(this);this.type="Sprite";this.geometry=d;this.material=void 0!==a?a:new THREE.SpriteMaterial}}();
 THREE.Sprite.prototype=Object.create(THREE.Object3D.prototype);THREE.Sprite.prototype.constructor=THREE.Sprite;THREE.Sprite.prototype.raycast=function(){var a=new THREE.Vector3;return function(b,c){a.setFromMatrixPosition(this.matrixWorld);var d=b.ray.distanceToPoint(a);d>this.scale.x||c.push({distance:d,point:this.position,face:null,object:this})}}();THREE.Sprite.prototype.clone=function(a){void 0===a&&(a=new THREE.Sprite(this.material));THREE.Object3D.prototype.clone.call(this,a);return a};
 THREE.Particle=THREE.Sprite;THREE.LensFlare=function(a,b,c,d,e){THREE.Object3D.call(this);this.lensFlares=[];this.positionScreen=new THREE.Vector3;this.customUpdateCallback=void 0;void 0!==a&&this.add(a,b,c,d,e)};THREE.LensFlare.prototype=Object.create(THREE.Object3D.prototype);THREE.LensFlare.prototype.constructor=THREE.LensFlare;
