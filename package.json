@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "build": "browserify public/javascripts/entry.js -o public/javascripts/bundle.js",
+    "start": "node ./bin/www",
+    "watch": "watchify public/javascripts/entry.js -o public/javascripts/bundle.js -dv",
+    "prepublish": "npm run build # also runs npm run prebuild",
+    "prebuild": "npm run test # also runs npm run pretest"
   },
   "dependencies": {
     "body-parser": "~1.12.4",
@@ -12,5 +16,9 @@
     "express": "~4.12.4",
     "morgan": "~1.5.3",
     "serve-favicon": "~2.2.1"
+  },
+  "devDependencies": {
+    "browserify": "^10.2.4",
+    "watchify": "^3.2.3"
   }
 }
