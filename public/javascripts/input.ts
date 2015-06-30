@@ -1,7 +1,7 @@
-//<reference path="typings/threejs/three.d.ts">
-//<reference path="typings/threejs/three-orbitcontrols.d.ts">
-//<reference path="typings/jquery/jquery.d.ts">
-//<reference path="typings/underscore/underscore.d.ts">
+///<reference path="typings/jquery/jquery.d.ts" />
+///<reference path="typings/underscore/underscore.d.ts" />
+///<reference path="typings/threejs/three.d.ts" />
+///<reference path="typings/threejs/three-orbitcontrols.d.ts" />
 /**
  * Static singleton class that handle inputs
  * Created by Henry on 6/27/2015.

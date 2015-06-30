@@ -1,4 +1,4 @@
-//<reference path="typings/threejs/three.d.ts">
+///<reference path="typings/threejs/three.d.ts" />
 
 /**
  * The World singleton object that defines the world space

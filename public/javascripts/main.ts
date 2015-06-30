@@ -1,15 +1,17 @@
-//<reference path="typings/threejs/three.d.ts">
-//<reference path="typings/threejs/three-orbitcontrols.d.ts">
-//<reference path="typings/jquery/jquery.d.ts">
-//<reference path="typings/underscore/underscore.d.ts">
+///<reference path="typings/jquery/jquery.d.ts" />
+///<reference path="typings/underscore/underscore.d.ts" />
+///<reference path="typings/threejs/three.d.ts" />
+///<reference path="typings/threejs/three-orbitcontrols.d.ts" />
 
 import $ = require("jquery");
 import _ = require("underscore");
-import THREE = require("three");
+import THREE2 = require("three");
 import World = require("./world");
 import Input = require("./input");
 import Renderer = require("./renderer");
 import Box = require("./box");
+
+declare var THREE:any;
 
 /**
  * The Main singleton object.
