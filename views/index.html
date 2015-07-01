@@ -8,6 +8,23 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
 </head>
 <body>
-<script data-main="javascripts/main.js" src="javascripts/lib/require.js"></script>
+<script data-main="javascripts/entry.js" src="javascripts/lib/require.js"></script>
+<script>
+    require.config({
+        baseUrl: "javascripts",
+        paths: {
+            jquery: 'lib/jquery',
+            three: 'lib/three',
+            detector: 'lib/detector',
+            orbitcontrols: 'lib/orbitcontrols',
+            underscore: 'lib/underscore'
+        },
+        shim: {
+            three: {
+                exports: 'THREE'
+            }
+        }
+    });
+</script>
 </body>
 </html>
