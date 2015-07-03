@@ -101,6 +101,12 @@ define(["require", "exports", "jquery", "underscore", "./box", "mousetrap"], fun
                     this.selected.deselect();
                     this.selected = null;
                 }
+                //Pointerlock
+                var dom = this.app.renderer.renderer.domElement;
+                this.requestPointerLock = dom.requestPointerLock || dom.mozRequestPointerLock || dom.webkitRequestPointerLock;
+                console.log(this.requestPointerLock);
+                this.requestPointerLock();
+                this.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock || document.webkitExitPointerLock;
             }
             this.app.renderer.renderWorld();
         };

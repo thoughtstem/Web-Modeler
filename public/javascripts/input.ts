@@ -15,6 +15,8 @@ import World = require("./world");
 import Box = require("./box");
 import Mousetrap = require("mousetrap");
 
+declare var document:any;
+
 class Input {
 
     /**
@@ -40,6 +42,8 @@ class Input {
      */
     mouse:THREE.Vector2 = new THREE.Vector2();
 
+    requestPointerLock:any;
+    exitPointerLock:any;
 
     keyMap = {
         SHIFT: 16
@@ -130,6 +134,18 @@ class Input {
                 this.selected.deselect();
                 this.selected = null;
             }
+
+            //Pointerlock
+            var dom = this.app.renderer.renderer.domElement;
+            this.requestPointerLock = dom.requestPointerLock ||
+                dom.mozRequestPointerLock ||
+                dom.webkitRequestPointerLock;
+            console.log(this.requestPointerLock);
+            this.requestPointerLock();
+
+            this.exitPointerLock = document.exitPointerLock ||
+                document.mozExitPointerLock ||
+                document.webkitExitPointerLock;
         }
 
         this.app.renderer.renderWorld();
@@ -140,7 +156,6 @@ class Input {
         evt.preventDefault();
 
         if (this.selected != null) {
-
         }
     }
 
