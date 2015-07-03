@@ -20,6 +20,7 @@ class Box extends THREE.Mesh {
         super();
         this.geometry = cubeGeo;
         this.material = cubeMaterial;
+        this.quaternion = new THREE.Quaternion();
     }
 
     /**

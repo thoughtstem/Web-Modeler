@@ -82,10 +82,25 @@ class Renderer {
 
         var selected = this.app.input.selected;
         if (selected != null) {
+            var euler = new THREE.Euler().setFromQuaternion(selected.quaternion, "YZX");
             this.panel.append(
                 $("<div>")
                     .append($("<h3>").html("Box"))
-                    .append($("<p>").html("X: " + selected.position.x + " Y: " + selected.position.y + " Z: " + selected.position.z))
+                    .append(
+                    $("<p>")
+                        .append($("<h4>").html("Position"))
+                        .append($("<span>").html("X " + selected.position.x + " Y " + selected.position.y + " Z " + selected.position.z))
+                )
+                    .append(
+                    $("<p>")
+                        .append($("<h4>").html("Rotation"))
+                        .append($("<span>").html("Yaw: " + euler.x + " Pitch: " + euler.y + " Roll: " + euler.z))
+                )
+                    .append(
+                    $("<p>")
+                        .append($("<h4>").html("Scale"))
+                        .append($("<span>").html("X " + selected.scale.x + " Y " + selected.scale.y + " Z " + selected.scale.z))
+                )
             );
         }
     }
