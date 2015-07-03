@@ -3,6 +3,7 @@
 ///<reference path="typings/threejs/three.d.ts" />
 ///<reference path="typings/threejs/three-orbitcontrols.d.ts" />
 ///<reference path="typings/general.d.ts"/>
+///<amd-dependency path="./lib/orbitcontrols" />
 
 import $ = require("jquery");
 import _ = require("underscore");
@@ -13,27 +14,27 @@ import Renderer = require("./renderer");
 import Box = require("./box");
 
 /**
- * The Main singleton object.
+ * The Application singleton object.
  * Created by Henry on 6/27/2015.
  */
-class Main {
-    /**
-     * The self instance
-     * @type {Main}
-     */
-    static instance = new Main();
-
+class App {
     camera:THREE.PerspectiveCamera;
     scene = new THREE.Scene();
     rollOverMesh:THREE.Mesh;
     rollOverMaterial:THREE.MeshBasicMaterial;
-    cubeGeo:THREE.BoxGeometry;
-    cubeMaterial:THREE.MeshLambertMaterial;
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
     plane:THREE.Mesh;
     controls:THREE.OrbitControls;
     isMiddleMouseDown:boolean;
+
+    /**
+     * Initiate managers
+     * @type {{SHIFT: number}}
+     */
+    renderer = new Renderer(this);
+    world = new World(this);
+    input = new Input(this, this.world);
 
     keyMap = {
         SHIFT: 16
@@ -56,10 +57,6 @@ class Main {
         this.rollOverMaterial = new THREE.MeshBasicMaterial({color: 0xff0000, opacity: 0.5, transparent: true});
         this.rollOverMesh = new THREE.Mesh(rollOverGeo, this.rollOverMaterial);
         this.scene.add(this.rollOverMesh);
-
-        // cubes
-        this.cubeGeo = new THREE.BoxGeometry(50, 50, 50);
-        this.cubeMaterial = new THREE.MeshLambertMaterial({color: 0xfeb74c, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture("textures/square-outline-textured.png")});
 
         // Draw grid
         var size = 500, step = 50;
@@ -86,7 +83,7 @@ class Main {
         this.plane.visible = false;
         this.scene.add(this.plane);
 
-        World.objects.push(this.plane);
+        this.world.objects.push(this.plane);
 
         // Lights
         var ambientLight = new THREE.AmbientLight(0x606060);
@@ -97,22 +94,22 @@ class Main {
         this.scene.add(directionalLight);
 
         //Controls
-        this.controls = new THREE.OrbitControls(this.camera, Renderer.renderer.domElement);
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.renderer.domElement);
 
         $(document).bind("mousemove", this.onMouseMove);
         $(document).bind("mousedown", this.onMouseDown);
         $(document).bind("mouseup", this.onMouseUp);
         $(window).bind("resize", this.onWindowResize);
 
-        Renderer.renderUI();
-        Renderer.renderWorld();
+        this.renderer.renderUI();
+        this.renderer.renderWorld();
     }
 
     onWindowResize() {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
 
-        Renderer.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     onMouseMove(event) {
@@ -124,7 +121,7 @@ class Main {
             this.camera.lookAt(new THREE.Vector3());
             this.raycaster.setFromCamera(this.mouse, this.camera);
 
-            var intersects = this.raycaster.intersectObjects(World.objects);
+            var intersects = this.raycaster.intersectObjects(this.world.objects);
 
             if (intersects.length > 0) {
                 var intersect = intersects[0];
@@ -133,7 +130,7 @@ class Main {
             }
         }
 
-        Renderer.renderWorld();
+        this.renderer.renderWorld();
     }
 
     onMouseDown(event) {
@@ -145,19 +142,21 @@ class Main {
             this.isMiddleMouseDown = true;
         }
         else {
+            /*
             this.raycaster.setFromCamera(this.mouse, this.camera);
             var intersects = this.raycaster.intersectObjects(World.objects);
 
             if (intersects.length > 0) {
                 var intersect = intersects[0];
 
-                if (_.contains(Input.pressed, this.keyMap.SHIFT)) {
+             if (_.contains(this.input.pressed, this.keyMap.SHIFT)) {
                     // delete cube
                     if (intersect.object != this.plane) {
                         this.scene.remove(intersect.object);
                         World.objects.splice(World.objects.indexOf(intersect.object), 1);
                     }
                 } else {
+
                     // create cube
                     var voxel = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
                     voxel.position.copy(intersect.point).add(intersect.face.normal);
@@ -165,11 +164,10 @@ class Main {
                     this.scene.add(voxel);
 
                     World.objects.push(voxel);
-
                 }
 
-                Renderer.renderWorld();
-            }
+             this.renderer.renderWorld();
+             }*/
         }
     }
 
@@ -185,8 +183,8 @@ class Main {
     onAdd() {
         var box = new Box();
         box.position = new THREE.Vector3();
-        World.add(box)
+        this.world.add(box)
     }
 }
 
-export = Main;
+export = App;

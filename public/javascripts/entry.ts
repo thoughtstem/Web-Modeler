@@ -7,7 +7,7 @@
  * Created by Henry on 6/27/2015.
  */
 import Detector = require("detector");
-import Main = require("./main");
+import App = require("./main");
 
 if (!Detector.webgl) Detector.addGetWebGLMessage();
-Main.instance.init();
+new App().init();
