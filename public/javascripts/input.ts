@@ -54,9 +54,13 @@ class Input {
 
     constructor(private app) {
         //Bind keys
+        //deprecated
         $(document).bind("keydown", evt => this.pressed.push(event.keyCode));
         $(document).bind("keyup", evt => this.pressed = _.without(this.pressed, event.keyCode));
 
+        Mousetrap.bind("t", evt => this.translate(evt));
+        Mousetrap.bind("s", evt => this.scale(evt));
+        Mousetrap.bind("r", evt => this.rotate(evt));
 
         //Bind mouse events
         $(document).bind("mousemove", evt => this.onMouseMove(evt));
@@ -129,6 +133,31 @@ class Input {
         }
 
         this.app.renderer.renderWorld();
+    }
+
+    //TODO: Lock mouse
+    translate(evt) {
+        evt.preventDefault();
+
+        if (this.selected != null) {
+
+        }
+    }
+
+    scale(evt) {
+        evt.preventDefault();
+
+        if (this.selected != null) {
+
+        }
+    }
+
+    rotate(evt) {
+        evt.preventDefault();
+
+        if (this.selected != null) {
+
+        }
     }
 }
 

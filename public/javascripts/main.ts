@@ -79,6 +79,8 @@ class App {
 
         //Controls
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.renderer.domElement);
+        this.controls.mouseButtons = {ORBIT: 1, ZOOM: 3, PAN: 2};
+        this.controls.zoomSpeed = 3;
 
         $(document).bind("mouseup", evt =>  this.onMouseUp(evt));
         $(window).bind("resize", evt => this.onWindowResize());

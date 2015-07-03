@@ -4,7 +4,7 @@
 ///<reference path="typings/threejs/three-orbitcontrols.d.ts" />
 ///<reference path="box.ts" />
 ///<reference path="typings/mousetrap/mousetrap.d.ts" />
-define(["require", "exports", "jquery", "underscore", "./box"], function (require, exports, $, _, Box) {
+define(["require", "exports", "jquery", "underscore", "./box", "mousetrap"], function (require, exports, $, _, Box, Mousetrap) {
     var Input = (function () {
         function Input(app) {
             var _this = this;
@@ -38,8 +38,12 @@ define(["require", "exports", "jquery", "underscore", "./box"], function (requir
                 SELECT: 1
             };
             //Bind keys
+            //deprecated
             $(document).bind("keydown", function (evt) { return _this.pressed.push(event.keyCode); });
             $(document).bind("keyup", function (evt) { return _this.pressed = _.without(_this.pressed, event.keyCode); });
+            Mousetrap.bind("t", function (evt) { return _this.translate(evt); });
+            Mousetrap.bind("s", function (evt) { return _this.scale(evt); });
+            Mousetrap.bind("r", function (evt) { return _this.rotate(evt); });
             //Bind mouse events
             $(document).bind("mousemove", function (evt) { return _this.onMouseMove(evt); });
             $(document).bind("mousedown", function (evt) { return _this.onMouseDown(evt); });
@@ -99,6 +103,22 @@ define(["require", "exports", "jquery", "underscore", "./box"], function (requir
                 }
             }
             this.app.renderer.renderWorld();
+        };
+        //TODO: Lock mouse
+        Input.prototype.translate = function (evt) {
+            evt.preventDefault();
+            if (this.selected != null) {
+            }
+        };
+        Input.prototype.scale = function (evt) {
+            evt.preventDefault();
+            if (this.selected != null) {
+            }
+        };
+        Input.prototype.rotate = function (evt) {
+            evt.preventDefault();
+            if (this.selected != null) {
+            }
         };
         return Input;
     })();
