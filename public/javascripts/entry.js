@@ -4,5 +4,5 @@
 define(["require", "exports", "detector", "./main"], function (require, exports, Detector, App) {
     if (!Detector.webgl)
         Detector.addGetWebGLMessage();
-    new App().init();
+    new App();
 });

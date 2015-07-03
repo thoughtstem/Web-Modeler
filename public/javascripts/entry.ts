@@ -10,4 +10,4 @@ import Detector = require("detector");
 import App = require("./main");
 
 if (!Detector.webgl) Detector.addGetWebGLMessage();
-new App().init();
+new App();

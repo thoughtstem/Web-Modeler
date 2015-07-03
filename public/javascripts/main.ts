@@ -40,10 +40,7 @@ class App {
         SHIFT: 16
     };
 
-    /**
-     * Called when the Main singleton is initialized.
-     */
-    init() {
+    constructor() {
         /**
          * Create Camera
          * @type {THREE.PerspectiveCamera}
@@ -96,10 +93,10 @@ class App {
         //Controls
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.renderer.domElement);
 
-        $(document).bind("mousemove", this.onMouseMove);
-        $(document).bind("mousedown", this.onMouseDown);
-        $(document).bind("mouseup", this.onMouseUp);
-        $(window).bind("resize", this.onWindowResize);
+        $(document).bind("mousemove", evt => this.onMouseMove(evt));
+        $(document).bind("mousedown", evt => this.onMouseDown(evt));
+        $(document).bind("mouseup", evt =>  this.onMouseUp(evt));
+        $(window).bind("resize", evt => this.onWindowResize());
 
         this.renderer.renderUI();
         this.renderer.renderWorld();
