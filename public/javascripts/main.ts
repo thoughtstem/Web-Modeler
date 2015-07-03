@@ -21,7 +21,6 @@ class App {
     camera:THREE.PerspectiveCamera;
     scene = new THREE.Scene();
     raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
     plane:THREE.Mesh;
     controls:THREE.OrbitControls;
     isMiddleMouseDown:boolean;
@@ -33,10 +32,6 @@ class App {
     renderer = new Renderer(this);
     world = new World(this);
     input = new Input(this);
-
-    keyMap = {
-        SHIFT: 16
-    };
 
     constructor() {
         /**
@@ -85,7 +80,6 @@ class App {
         //Controls
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.renderer.domElement);
 
-        $(document).bind("mousedown", evt => this.onMouseDown(evt));
         $(document).bind("mouseup", evt =>  this.onMouseUp(evt));
         $(window).bind("resize", evt => this.onWindowResize());
 
@@ -98,44 +92,6 @@ class App {
         this.camera.updateProjectionMatrix();
 
         this.renderer.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    onMouseDown(event) {
-        event.preventDefault();
-
-        this.mouse.set(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
-
-        if (event.which == 2) {
-            this.isMiddleMouseDown = true;
-        }
-        else {
-            /*
-            this.raycaster.setFromCamera(this.mouse, this.camera);
-            var intersects = this.raycaster.intersectObjects(World.objects);
-
-            if (intersects.length > 0) {
-                var intersect = intersects[0];
-
-             if (_.contains(this.input.pressed, this.keyMap.SHIFT)) {
-                    // delete cube
-                    if (intersect.object != this.plane) {
-                        this.scene.remove(intersect.object);
-                        World.objects.splice(World.objects.indexOf(intersect.object), 1);
-                    }
-                } else {
-
-                    // create cube
-                    var voxel = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
-                    voxel.position.copy(intersect.point).add(intersect.face.normal);
-                    voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
-                    this.scene.add(voxel);
-
-                    World.objects.push(voxel);
-                }
-
-             this.renderer.renderWorld();
-             }*/
-        }
     }
 
     onMouseUp(e) {
