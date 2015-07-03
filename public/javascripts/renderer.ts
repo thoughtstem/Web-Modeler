@@ -1,29 +1,34 @@
+///<reference path="typings/jquery/jquery.d.ts" />
+///<reference path="typings/threejs/three.d.ts" />
+///<reference path="main.ts" />
+
 /**
  * The UI and World renderer
  * Created by Henry on 6/28/2015.
  */
-var $ = require("./lib/jquery.js");
-var THREE = require("./lib/three.js");
+import $ = require("jquery");
+import THREE = require("three");
 
-var Renderer = new function () {
-    var self = this;
+class Renderer {
+    container:any;
+    renderer = new THREE.WebGLRenderer({antialias: true});
 
-    self.container = $("<div>").appendTo(document.body);
+    constructor(private app) {
+        this.container = $("<div>").appendTo(document.body);
 
-    /**
-     * WebGL Renderer
-     */
-    self.renderer = new THREE.WebGLRenderer({antialias: true});
-    self.renderer.setClearColor(0xf0f0f0);
-    self.renderer.setPixelRatio(window.devicePixelRatio);
-    self.renderer.setSize(window.innerWidth, window.innerHeight);
-    self.container.append(self.renderer.domElement);
+        /**
+         * WebGL Renderer
+         */
+        this.renderer.setClearColor(0xf0f0f0);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.container.append(this.renderer.domElement);
+    }
 
     /**
      * Renders the user interface.
      */
-    self.renderUI = function () {
-        var Main = require("./main.js");
+    renderUI() {
         $("<div>")
             .addClass("ui")
             .addClass("header")
@@ -31,7 +36,7 @@ var Renderer = new function () {
             $("<h1>")
                 .html("Voxel Modeler")
         )
-            .appendTo(self.container);
+            .appendTo(this.container);
 
         $("<div>")
             .addClass("ui")
@@ -51,7 +56,7 @@ var Renderer = new function () {
                     .addClass("glyphicon")
                     .addClass("glyphicon-plus")
             )
-                .click(Main.onAdd)
+                .click((evt) => this.app.onAdd())
         ).append(
             $("<button>")
                 .attr("type", "button")
@@ -63,16 +68,15 @@ var Renderer = new function () {
                     .addClass("glyphicon-pencil")
             )
         )
-            .appendTo(self.container);
-    };
+            .appendTo(this.container);
+    }
 
     /**
      * Renders the world.
      */
-    self.renderWorld = function () {
-        var Main = require("./main.js");
-        self.renderer.render(Main.scene, Main.camera);
-    };
-};
+    renderWorld() {
+        this.renderer.render(this.app.scene, this.app.camera);
+    }
+}
 
-module.exports = Renderer;
+export = Renderer;

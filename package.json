@@ -3,20 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "browserify public/javascripts/entry.js -o public/javascripts/bundle.js",
+    "build": "tsc public/javascripts/entry.ts --module amd",
     "start": "npm run build && node ./bin/www",
-    "watch": "watchify public/javascripts/entry.js -o public/javascripts/bundle.js -dv",
-    "prepublish": "npm run build # also runs npm run prebuild",
-    "prebuild": "npm run test # also runs npm run pretest"
+    "watch": "watchify public/javascripts/entry.ts -o public/javascripts/bundle.js -dv",
+    "prepublish": "npm run build # also runs npm run prebuild"
   },
   "dependencies": {
-    "browserify": "^10.2.4",
-	"body-parser": "~1.12.4",
+    "body-parser": "~1.12.4",
     "cookie-parser": "~1.3.5",
     "debug": "~2.2.0",
     "express": "~4.12.4",
     "morgan": "~1.5.3",
-    "serve-favicon": "~2.2.1"
+    "serve-favicon": "~2.2.1",
+    "typescript": "^1.4.1"
   },
   "devDependencies": {
     "watchify": "^3.2.3"

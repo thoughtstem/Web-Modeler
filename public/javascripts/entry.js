@@ -1,9 +1,8 @@
-/**
- * The main JS entry point to run the application
- * Created by Henry on 6/27/2015.
- */
-var Detector = require("./lib/detector.js");
-var Main = require("./main.js");
-
-if (!Detector.webgl) Detector.addGetWebGLMessage();
-Main.init();
+///<reference path="typings/threejs/three.d.ts"/>
+///<reference path="typings/threejs/detector.d.ts"/>
+///<reference path="typings/general.d.ts"/>
+define(["require", "exports", "detector", "./main"], function (require, exports, Detector, App) {
+    if (!Detector.webgl)
+        Detector.addGetWebGLMessage();
+    new App();
+});
