@@ -91,22 +91,19 @@ define(["require", "exports", "jquery", "underscore", "./box", "mousetrap"], fun
                     if (this.selected == null) {
                         this.selected = hitObj;
                         hitObj.select();
+                        this.app.renderer.renderUI();
                     }
                     else {
                         this.selected.deselect();
                         this.selected = null;
+                        this.app.renderer.renderUI();
                     }
                 }
                 else if (this.selected instanceof Box) {
                     this.selected.deselect();
                     this.selected = null;
+                    this.app.renderer.renderUI();
                 }
-                //Pointerlock
-                var dom = this.app.renderer.renderer.domElement;
-                this.requestPointerLock = dom.requestPointerLock || dom.mozRequestPointerLock || dom.webkitRequestPointerLock;
-                console.log(this.requestPointerLock);
-                this.requestPointerLock();
-                this.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock || document.webkitExitPointerLock;
             }
             this.app.renderer.renderWorld();
         };

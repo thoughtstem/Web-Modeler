@@ -10,8 +10,13 @@ import $ = require("jquery");
 import THREE = require("three");
 
 class Renderer {
+    /**
+     * The primary container that contains the program.
+     */
     container:any;
     renderer = new THREE.WebGLRenderer({antialias: true});
+    heading = $("<div>");
+    panel = $("<div>");
 
     constructor(private app) {
         this.container = $("<div>").appendTo(document.body);
@@ -23,25 +28,31 @@ class Renderer {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.container.append(this.renderer.domElement);
+
+        this.heading
+            .addClass("ui")
+            .addClass("header")
+            .appendTo(this.container);
+
+        this.panel
+            .addClass("ui")
+            .addClass("panel")
+            .appendTo(this.container);
     }
 
     /**
      * Renders the user interface.
      */
     renderUI() {
-        $("<div>")
-            .addClass("ui")
-            .addClass("header")
+        this.heading.empty();
+        this.heading
             .append(
             $("<h1>")
                 .html("Voxel Modeler")
-        )
-            .appendTo(this.container);
+        );
 
-        $("<div>")
-            .addClass("ui")
-            .addClass("panel")
-            .append(
+        this.panel.empty();
+        this.panel.append(
             $("<div>")
                 .append($("<h4>").html("Input Control"))
                 .append($("<p>").html("Middle - Rotate"))
@@ -67,8 +78,16 @@ class Renderer {
                     .addClass("glyphicon")
                     .addClass("glyphicon-pencil")
             )
-        )
-            .appendTo(this.container);
+        );
+
+        var selected = this.app.input.selected;
+        if (selected != null) {
+            this.panel.append(
+                $("<div>")
+                    .append($("<h3>").html("Box"))
+                    .append($("<p>").html("X: " + selected.position.x + " Y: " + selected.position.y + " Z: " + selected.position.z))
+            );
+        }
     }
 
     /**
