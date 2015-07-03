@@ -3,6 +3,7 @@
 ///<reference path="typings/threejs/three.d.ts" />
 ///<reference path="typings/threejs/three-orbitcontrols.d.ts" />
 ///<reference path="box.ts" />
+///<reference path="typings/mousetrap/mousetrap.d.ts" />
 define(["require", "exports", "jquery", "underscore", "./box"], function (require, exports, $, _, Box) {
     var Input = (function () {
         function Input(app) {

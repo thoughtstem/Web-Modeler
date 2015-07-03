@@ -3,6 +3,7 @@
 ///<reference path="typings/threejs/three.d.ts" />
 ///<reference path="typings/threejs/three-orbitcontrols.d.ts" />
 ///<reference path="box.ts" />
+///<reference path="typings/mousetrap/mousetrap.d.ts" />
 
 /**
  * Handles user inputs
@@ -12,6 +13,7 @@ import $ = require("jquery");
 import _ = require("underscore");
 import World = require("./world");
 import Box = require("./box");
+import Mousetrap = require("mousetrap");
 
 class Input {
 
@@ -53,8 +55,8 @@ class Input {
     constructor(private app) {
         //Bind keys
         $(document).bind("keydown", evt => this.pressed.push(event.keyCode));
-
         $(document).bind("keyup", evt => this.pressed = _.without(this.pressed, event.keyCode));
+
 
         //Bind mouse events
         $(document).bind("mousemove", evt => this.onMouseMove(evt));
