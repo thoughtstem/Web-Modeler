@@ -27,7 +27,8 @@ class World {
         this.objects.push(obj3D);
 
         if (obj3D instanceof Box) {
-            this.app.scene.add(obj3D.getMesh());
+            this.app.scene.add(obj3D);
+            this.app.renderer.renderWorld();
         }
     }
 }

@@ -11,6 +11,7 @@
 import $ = require("jquery");
 import _ = require("underscore");
 import World = require("./world");
+import Box = require("./box");
 
 class Input {
 
@@ -21,20 +22,25 @@ class Input {
     selected = null;
 
     /**
+     * The current hovered object
+     * @type {Box}
+     */
+    hovered = null;
+
+    /**
      * A set of pressed keycodes
      * @type {Array}
      */
     pressed = [];
 
-    constructor(private app, private world) {
+    constructor(private app) {
         //Bind keys
-        $(document).bind("keydown", function (event) {
-            this.pressed.push(event.keyCode);
-        });
+        $(document).bind("keydown", evt => this.pressed.push(event.keyCode));
 
-        $(document).bind("keyup", function (event) {
-            this.pressed = _.without(this.pressed, event.keyCode);
-        });
+        $(document).bind("keyup", evt => this.pressed = _.without(this.pressed, event.keyCode));
+
+        //Bind events
+        $(document).bind("mousemove", evt => this.onMouseMove(evt));
     }
 
     /**
@@ -43,13 +49,33 @@ class Input {
      */
     getHit() {
         this.app.raycaster.setFromCamera(this.app.mouse, this.app.camera);
-        var intersects = this.app.raycaster.intersectObjects(this.world.objects);
+        var intersects = this.app.raycaster.intersectObjects(this.app.world.objects, true);
 
         if (intersects.length > 0) {
             return intersects[0];
         }
 
         return null;
+    }
+
+    onMouseMove(event) {
+        event.preventDefault();
+
+        this.app.mouse.set(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
+
+        var hit = this.getHit();
+        var hitObj = (hit != null) ? hit.object : null;
+
+        if (hitObj instanceof Box) {
+            this.hovered = hitObj;
+            hitObj.select();
+        } else {
+            if (this.hovered instanceof Box) {
+                this.hovered.deselect();
+            }
+        }
+
+        this.app.renderer.renderWorld();
     }
 }
 

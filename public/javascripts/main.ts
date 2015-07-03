@@ -20,8 +20,6 @@ import Box = require("./box");
 class App {
     camera:THREE.PerspectiveCamera;
     scene = new THREE.Scene();
-    rollOverMesh:THREE.Mesh;
-    rollOverMaterial:THREE.MeshBasicMaterial;
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
     plane:THREE.Mesh;
@@ -34,7 +32,7 @@ class App {
      */
     renderer = new Renderer(this);
     world = new World(this);
-    input = new Input(this, this.world);
+    input = new Input(this);
 
     keyMap = {
         SHIFT: 16
@@ -48,12 +46,6 @@ class App {
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
         this.camera.position.set(500, 800, 1300);
         this.camera.lookAt(new THREE.Vector3());
-
-        // roll-over helpers
-        var rollOverGeo = new THREE.BoxGeometry(50, 50, 50);
-        this.rollOverMaterial = new THREE.MeshBasicMaterial({color: 0xff0000, opacity: 0.5, transparent: true});
-        this.rollOverMesh = new THREE.Mesh(rollOverGeo, this.rollOverMaterial);
-        this.scene.add(this.rollOverMesh);
 
         // Draw grid
         var size = 500, step = 50;
@@ -80,7 +72,7 @@ class App {
         this.plane.visible = false;
         this.scene.add(this.plane);
 
-        this.world.objects.push(this.plane);
+        //this.world.objects.push(this.plane);
 
         // Lights
         var ambientLight = new THREE.AmbientLight(0x606060);
@@ -93,7 +85,6 @@ class App {
         //Controls
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.renderer.domElement);
 
-        $(document).bind("mousemove", evt => this.onMouseMove(evt));
         $(document).bind("mousedown", evt => this.onMouseDown(evt));
         $(document).bind("mouseup", evt =>  this.onMouseUp(evt));
         $(window).bind("resize", evt => this.onWindowResize());
@@ -107,27 +98,6 @@ class App {
         this.camera.updateProjectionMatrix();
 
         this.renderer.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    onMouseMove(event) {
-        event.preventDefault();
-
-        this.mouse.set(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
-
-        if (!this.isMiddleMouseDown) {
-            this.camera.lookAt(new THREE.Vector3());
-            this.raycaster.setFromCamera(this.mouse, this.camera);
-
-            var intersects = this.raycaster.intersectObjects(this.world.objects);
-
-            if (intersects.length > 0) {
-                var intersect = intersects[0];
-                this.rollOverMesh.position.copy(intersect.point).add(intersect.face.normal);
-                this.rollOverMesh.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
-            }
-        }
-
-        this.renderer.renderWorld();
     }
 
     onMouseDown(event) {

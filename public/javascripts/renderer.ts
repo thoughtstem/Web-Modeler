@@ -56,7 +56,7 @@ class Renderer {
                     .addClass("glyphicon")
                     .addClass("glyphicon-plus")
             )
-                .click(this.app.onAdd)
+                .click((evt) => this.app.onAdd())
         ).append(
             $("<button>")
                 .attr("type", "button")
