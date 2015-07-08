@@ -144,20 +144,20 @@ class Input {
                 var newTranslate = this.actionOriginalScale.clone().add(translate);
                 console.log(newTranslate);
                 this.selected.position.set(newTranslate.x, newTranslate.y, newTranslate.z);
+                this.app.renderer.renderUI();
                 break;
             case Action.SCALING:
                 var scale = this.getActionDelta().addScalar(1);
-
                 if (scale.lengthSq() > 0) {
                     var newScale = this.actionOriginalScale.clone().multiply(scale);
                     this.selected.scale.set(newScale.x, newScale.y, newScale.z);
                 }
-
                 this.app.renderer.renderUI();
                 break;
             case Action.ROTATING:
                 var actionDelta = this.getActionDelta().normalize().add(this.actionOriginalPosition);
                 this.selected.lookAt(actionDelta);
+                this.app.renderer.renderUI();
                 break;
         }
 
@@ -198,27 +198,29 @@ class Input {
 
 
     onMouseDown(evt) {
-        evt.preventDefault();
 
         //Left click selection
         if (evt.which == this.mouseMap.SELECT) {
             var hitObj = this.getHoverObj();
 
             if (hitObj instanceof Box) {
+                evt.preventDefault();
                 if (this.selected == null) {
                     this.selected = hitObj;
                     hitObj.select();
                     this.app.renderer.renderUI();
                 } else {
                     this.selected.deselect();
-                    this.selected = null;
+                    this.selected = hitObj;
+                    hitObj.select();
                     this.app.renderer.renderUI();
                 }
-            } else if (this.selected instanceof Box) {
+            }
+            /*else if (this.selected instanceof Box) {
                 this.selected.deselect();
                 this.selected = null;
                 this.app.renderer.renderUI();
-            }
+             }*/
             /*
              //Pointerlock
              var dom = this.app.renderer.renderer.domElement;

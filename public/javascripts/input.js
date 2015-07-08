@@ -115,6 +115,7 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
                     var newTranslate = this.actionOriginalScale.clone().add(translate);
                     console.log(newTranslate);
                     this.selected.position.set(newTranslate.x, newTranslate.y, newTranslate.z);
+                    this.app.renderer.renderUI();
                     break;
                 case 2 /* SCALING */:
                     var scale = this.getActionDelta().addScalar(1);
@@ -127,6 +128,7 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
                 case 3 /* ROTATING */:
                     var actionDelta = this.getActionDelta().normalize().add(this.actionOriginalPosition);
                     this.selected.lookAt(actionDelta);
+                    this.app.renderer.renderUI();
                     break;
             }
             this.app.renderer.renderWorld();
@@ -160,11 +162,11 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
             return delta;
         };
         Input.prototype.onMouseDown = function (evt) {
-            evt.preventDefault();
             //Left click selection
             if (evt.which == this.mouseMap.SELECT) {
                 var hitObj = this.getHoverObj();
                 if (hitObj instanceof Box) {
+                    evt.preventDefault();
                     if (this.selected == null) {
                         this.selected = hitObj;
                         hitObj.select();
@@ -172,15 +174,15 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
                     }
                     else {
                         this.selected.deselect();
-                        this.selected = null;
+                        this.selected = hitObj;
+                        hitObj.select();
                         this.app.renderer.renderUI();
                     }
-                }
-                else if (this.selected instanceof Box) {
+                } /*else if (this.selected instanceof Box) {
                     this.selected.deselect();
                     this.selected = null;
                     this.app.renderer.renderUI();
-                }
+                }*/
             }
             this.app.renderer.renderWorld();
         };

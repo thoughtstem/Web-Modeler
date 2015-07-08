@@ -30,3 +30,8 @@ body {
 .panel > button {
     margin: 5px;
 }
+
+.inputField {
+    width: 85%;
+    overflow: hidden;
+}

@@ -85,24 +85,112 @@ class Renderer {
             var euler = new THREE.Euler().setFromQuaternion(selected.quaternion, "YZX");
             this.panel.append(
                 $("<div>")
-                    .append($("<h3>").html("Box"))
+                    .append($('<input/>').attr({type: "text", value: "Box"}).addClass("inputField"))
                     .append(
                     $("<p>")
                         .append($("<h4>").html("Position"))
-                        .append($("<span>").html("X " + selected.position.x + " Y " + selected.position.y + " Z " + selected.position.z))
+                        .append($("<span>").html("X "))
+                        .append(this.createInput(
+                            selected,
+                            selected.position.x,
+                            function () {
+                                selected.position.x = parseFloat($(this).val());
+                                $(this).val(selected.position.x);
+                            }
+                        ))
+                        .append($("<span>").html("Y "))
+                        .append(this.createInput(
+                            selected,
+                            selected.position.y,
+                            function () {
+                                selected.position.y = parseFloat($(this).val());
+                                $(this).val(selected.position.y);
+                            }
+                        ))
+                        .append($("<span>").html("Z "))
+                        .append(this.createInput(
+                            selected,
+                            selected.position.z,
+                            function () {
+                                selected.position.z = parseFloat($(this).val());
+                                $(this).val(selected.position.z);
+                            }
+                        ))
                 )
                     .append(
                     $("<p>")
                         .append($("<h4>").html("Rotation"))
-                        .append($("<span>").html("Yaw: " + euler.x + " Pitch: " + euler.y + " Roll: " + euler.z))
+                        .append($("<span>").html("X "))
+                        .append(this.createInput(
+                            selected,
+                            selected.rotation.x,
+                            function () {
+                                selected.rotation.x = parseFloat($(this).val());
+                                $(this).val(selected.rotation.x);
+                            }
+                        ))
+                        .append($("<span>").html("Y "))
+                        .append(this.createInput(
+                            selected,
+                            selected.rotation.y,
+                            function () {
+                                selected.rotation.y = parseFloat($(this).val());
+                                $(this).val(selected.rotation.y);
+                            }
+                        ))
+                        .append($("<span>").html("Z "))
+                        .append(this.createInput(
+                            selected,
+                            selected.rotation.z,
+                            function () {
+                                selected.rotation.z = parseFloat($(this).val());
+                                $(this).val(selected.rotation.z);
+                            }
+                        ))
                 )
                     .append(
                     $("<p>")
                         .append($("<h4>").html("Scale"))
-                        .append($("<span>").html("X " + selected.scale.x + " Y " + selected.scale.y + " Z " + selected.scale.z))
+                        .append($("<span>").html("X "))
+                        .append(this.createInput(
+                            selected,
+                            selected.scale.x,
+                            function () {
+                                selected.scale.x = parseFloat($(this).val());
+                                $(this).val(selected.scale.x);
+                            }
+                        ))
+                        .append($("<span>").html("Y "))
+                        .append(this.createInput(
+                            selected,
+                            selected.scale.y,
+                            function () {
+                                selected.scale.y = parseFloat($(this).val());
+                                $(this).val(selected.scale.y);
+                            }
+                        ))
+                        .append($("<span>").html("Z "))
+                        .append(this.createInput(
+                            selected,
+                            selected.scale.z,
+                            function () {
+                                selected.scale.z = parseFloat($(this).val());
+                                $(this).val(selected.scale.z);
+                            }
+                        ))
                 )
             );
         }
+    }
+
+    private timer = null;
+    //TODO: Add timer to wait for user to stop typing.
+    private createInput(selected:THREE.Object3D, variable, callback) {
+        return $('<input/>')
+            .attr({type: "text", value: variable})
+            .addClass("inputField")
+            .keyup(callback)
+            .keyup(() => this.renderWorld());
     }
 
     /**
