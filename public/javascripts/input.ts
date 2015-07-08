@@ -65,7 +65,8 @@ class Input {
      * The original state of the object, represented by this vector
      * @type {Any}
      */
-    actionOriginalState:THREE.Vector3 = null;
+    actionOriginalPosition:THREE.Vector3 = null;
+    actionOriginalScale:THREE.Vector3 = null;
 
     keyMap = {
         SHIFT: 16
@@ -138,32 +139,17 @@ class Input {
                 }
                 break;
             case Action.TRANSLATING:
+                var translate = this.getActionDelta().multiplyScalar(10);
+                var newTranslate = this.actionOriginalScale.clone().add(translate);
+                console.log(newTranslate);
+                this.selected.position.set(newTranslate.x, newTranslate.y, newTranslate.z);
                 break;
             case Action.SCALING:
-                this.app.raycaster.setFromCamera(this.mouse, this.app.camera);
-                var pLocal = new THREE.Vector3(0, 0, -1);
-                var pWorld = pLocal.applyMatrix4(this.app.camera.matrixWorld);
-                //Direction the camera is facing
-                var normal = pWorld.sub(this.app.camera.position).normalize();
-                //Create a plane on the selected object to do a raytrace hit
-                var plane = new THREE.Plane(normal, this.selected.position.dot(normal));
-                var hitPos = this.app.raycaster.ray.intersectPlane(plane);
 
-                if (this.actionStart == null) {
-                    this.actionStart = hitPos;
-                }
-                if (this.actionOriginalState == null) {
-                    this.actionOriginalState = this.selected.scale.clone();
-                }
-
-                //Make it such that at the starting point, the delta is zero (there's no change).
-                var distToObj = this.actionStart.distanceTo(this.selected.position);
-                //Calculate the delta position from the hit world position to the selected object poslition
-                var delta = hitPos.clone().sub(this.selected.position).divideScalar(distToObj);
-                var scale = delta;
+                var scale = this.getActionDelta().addScalar(1);
 
                 if (scale.lengthSq() > 0) {
-                    var newScale = this.actionOriginalState.clone().multiply(scale);
+                    var newScale = this.actionOriginalScale.clone().multiply(scale);
                     this.selected.scale.set(newScale.x, newScale.y, newScale.z);
                 }
 
@@ -174,6 +160,36 @@ class Input {
         }
 
         this.app.renderer.renderWorld();
+    }
+
+    getActionDelta():THREE.Vector3 {
+        if (this.actionOriginalPosition == null) {
+            this.actionOriginalPosition = this.selected.position.clone();
+        }
+        if (this.actionOriginalScale == null) {
+            this.actionOriginalScale = this.selected.scale.clone();
+        }
+
+        this.app.raycaster.setFromCamera(this.mouse, this.app.camera);
+        var pLocal = new THREE.Vector3(0, 0, -1);
+        var pWorld = pLocal.applyMatrix4(this.app.camera.matrixWorld);
+        //Direction the camera is facing
+        var normal = pWorld.sub(this.app.camera.position).normalize();
+        //Create a plane on the selected object to do a raytrace hit
+        var plane = new THREE.Plane(normal, this.actionOriginalPosition.dot(normal));
+        var hitPos = this.app.raycaster.ray.intersectPlane(plane);
+
+        if (this.actionStart == null) {
+            this.actionStart = hitPos;
+        }
+
+        //Make it such that at the starting point, the delta is zero (there's no change).
+        var startToObj = this.actionStart.clone().sub(this.actionOriginalPosition);
+        //Calculate the delta position from the hit world position to the selected object position
+        var delta = hitPos.clone().sub(this.actionOriginalPosition).divide(startToObj).subScalar(1);
+
+        //TODO: CTR press cause grid lock.
+        return delta;
     }
 
 
@@ -244,7 +260,8 @@ class Input {
         evt.preventDefault();
         this.action = Action.NONE;
         this.actionStart = null;
-        this.actionOriginalState = null;
+        this.actionOriginalPosition = null;
+        this.actionOriginalScale = null;
     }
 }
 
