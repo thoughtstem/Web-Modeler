@@ -11,11 +11,14 @@
  */
 import $ = require("jquery");
 import _ = require("underscore");
+import THREE = require("three");
 import World = require("./world");
 import Box = require("./box");
 import Mousetrap = require("mousetrap");
 
 declare var document:any;
+
+enum Action{    NONE, TRANSLATING, SCALING, ROTATING}
 
 class Input {
 
@@ -23,19 +26,19 @@ class Input {
      * The current selected object
      * @type {Box}
      */
-    selected = null;
+    selected:Box = null;
 
     /**
      * The current hovered object
      * @type {Box}
      */
-    hovered = null;
+    hovered:Box = null;
 
     /**
      * A set of pressed keycodes
      * @type {Array}
      */
-    pressed = [];
+    pressed:number[] = [];
 
     /**
      * The current mouse position on screen.
@@ -44,6 +47,25 @@ class Input {
 
     requestPointerLock:any;
     exitPointerLock:any;
+
+
+    /**
+     * The type of action currently being done.
+     * @type {Action}
+     */
+    action:Action = Action.NONE;
+
+    /**
+     * The position in which the action starts.
+     * @type {THREE.Vector3}
+     */
+    actionStart:THREE.Vector3 = null;
+
+    /**
+     * The original state of the object, represented by this vector
+     * @type {Any}
+     */
+    actionOriginalState:THREE.Vector3 = null;
 
     keyMap = {
         SHIFT: 16
@@ -63,8 +85,11 @@ class Input {
         $(document).bind("keyup", evt => this.pressed = _.without(this.pressed, event.keyCode));
 
         Mousetrap.bind("t", evt => this.translate(evt));
+        Mousetrap.bind("t", evt => this.stopAction(evt), "keyup");
         Mousetrap.bind("s", evt => this.scale(evt));
+        Mousetrap.bind("s", evt => this.stopAction(evt), "keyup");
         Mousetrap.bind("r", evt => this.rotate(evt));
+        Mousetrap.bind("r", evt => this.stopAction(evt), "keyup");
 
         //Bind mouse events
         $(document).bind("mousemove", evt => this.onMouseMove(evt));
@@ -100,16 +125,53 @@ class Input {
 
         this.mouse.set((evt.clientX / window.innerWidth) * 2 - 1, -(evt.clientY / window.innerHeight) * 2 + 1);
 
-        var hitObj = this.getHoverObj();
+        switch (this.action) {
+            case Action.NONE:
+                var hitObj = this.getHoverObj();
 
-        if (hitObj instanceof Box) {
-            this.hovered = hitObj;
-            hitObj.select();
-        } else if (this.hovered instanceof Box && this.selected != this.hovered) {
-            this.hovered.deselect();
-            this.hovered = null;
+                if (hitObj instanceof Box) {
+                    this.hovered = hitObj;
+                    hitObj.select();
+                } else if (this.hovered instanceof Box && this.selected != this.hovered) {
+                    this.hovered.deselect();
+                    this.hovered = null;
+                }
+                break;
+            case Action.TRANSLATING:
+                break;
+            case Action.SCALING:
+                this.app.raycaster.setFromCamera(this.mouse, this.app.camera);
+                var pLocal = new THREE.Vector3(0, 0, -1);
+                var pWorld = pLocal.applyMatrix4(this.app.camera.matrixWorld);
+                //Direction the camera is facing
+                var normal = pWorld.sub(this.app.camera.position).normalize();
+                //Create a plane on the selected object to do a raytrace hit
+                var plane = new THREE.Plane(normal, this.selected.position.dot(normal));
+                var hitPos = this.app.raycaster.ray.intersectPlane(plane);
+
+                if (this.actionStart == null) {
+                    this.actionStart = hitPos;
+                }
+                if (this.actionOriginalState == null) {
+                    this.actionOriginalState = this.selected.scale.clone();
+                }
+
+                //Make it such that at the starting point, the delta is zero (there's no change).
+                var distToObj = this.actionStart.distanceTo(this.selected.position);
+                //Calculate the delta position from the hit world position to the selected object poslition
+                var delta = hitPos.clone().sub(this.selected.position).divideScalar(distToObj);
+                var scale = delta;
+
+                if (scale.lengthSq() > 0) {
+                    var newScale = this.actionOriginalState.clone().multiply(scale);
+                    this.selected.scale.set(newScale.x, newScale.y, newScale.z);
+                }
+
+                this.app.renderer.renderUI();
+                break;
+            case Action.ROTATING:
+                break;
         }
-
 
         this.app.renderer.renderWorld();
     }
@@ -138,15 +200,15 @@ class Input {
                 this.app.renderer.renderUI();
             }
             /*
-            //Pointerlock
-            var dom = this.app.renderer.renderer.domElement;
-            this.requestPointerLock = dom.requestPointerLock ||
-                dom.mozRequestPointerLock ||
-                dom.webkitRequestPointerLock;
-            console.log(this.requestPointerLock);
+             //Pointerlock
+             var dom = this.app.renderer.renderer.domElement;
+             this.requestPointerLock = dom.requestPointerLock ||
+             dom.mozRequestPointerLock ||
+             dom.webkitRequestPointerLock;
+             console.log(this.requestPointerLock);
 
-            this.exitPointerLock = document.exitPointerLock ||
-                document.mozExitPointerLock ||
+             this.exitPointerLock = document.exitPointerLock ||
+             document.mozExitPointerLock ||
              document.webkitExitPointerLock;*/
         }
 
@@ -158,6 +220,7 @@ class Input {
         evt.preventDefault();
 
         if (this.selected != null) {
+            this.action = Action.TRANSLATING;
         }
     }
 
@@ -165,7 +228,7 @@ class Input {
         evt.preventDefault();
 
         if (this.selected != null) {
-
+            this.action = Action.SCALING;
         }
     }
 
@@ -173,8 +236,15 @@ class Input {
         evt.preventDefault();
 
         if (this.selected != null) {
-
+            this.action = Action.ROTATING;
         }
+    }
+
+    stopAction(evt) {
+        evt.preventDefault();
+        this.action = Action.NONE;
+        this.actionStart = null;
+        this.actionOriginalState = null;
     }
 }
 
