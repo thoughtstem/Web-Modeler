@@ -67,6 +67,7 @@ class Input {
      */
     actionOriginalPosition:THREE.Vector3 = null;
     actionOriginalScale:THREE.Vector3 = null;
+    actionOriginalRotate:THREE.Euler = null;
 
     keyMap = {
         SHIFT: 16
@@ -145,7 +146,6 @@ class Input {
                 this.selected.position.set(newTranslate.x, newTranslate.y, newTranslate.z);
                 break;
             case Action.SCALING:
-
                 var scale = this.getActionDelta().addScalar(1);
 
                 if (scale.lengthSq() > 0) {
@@ -156,6 +156,8 @@ class Input {
                 this.app.renderer.renderUI();
                 break;
             case Action.ROTATING:
+                var actionDelta = this.getActionDelta().normalize().add(this.actionOriginalPosition);
+                this.selected.lookAt(actionDelta);
                 break;
         }
 
@@ -169,7 +171,9 @@ class Input {
         if (this.actionOriginalScale == null) {
             this.actionOriginalScale = this.selected.scale.clone();
         }
-
+        if (this.actionOriginalRotate == null) {
+            this.actionOriginalRotate = this.selected.rotation.clone();
+        }
         this.app.raycaster.setFromCamera(this.mouse, this.app.camera);
         var pLocal = new THREE.Vector3(0, 0, -1);
         var pWorld = pLocal.applyMatrix4(this.app.camera.matrixWorld);
@@ -262,6 +266,7 @@ class Input {
         this.actionStart = null;
         this.actionOriginalPosition = null;
         this.actionOriginalScale = null;
+        this.actionOriginalRotate = null;
     }
 }
 

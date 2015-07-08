@@ -51,6 +51,7 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
              */
             this.actionOriginalPosition = null;
             this.actionOriginalScale = null;
+            this.actionOriginalRotate = null;
             this.keyMap = {
                 SHIFT: 16
             };
@@ -124,6 +125,8 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
                     this.app.renderer.renderUI();
                     break;
                 case 3 /* ROTATING */:
+                    var actionDelta = this.getActionDelta().normalize().add(this.actionOriginalPosition);
+                    this.selected.lookAt(actionDelta);
                     break;
             }
             this.app.renderer.renderWorld();
@@ -134,6 +137,9 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
             }
             if (this.actionOriginalScale == null) {
                 this.actionOriginalScale = this.selected.scale.clone();
+            }
+            if (this.actionOriginalRotate == null) {
+                this.actionOriginalRotate = this.selected.rotation.clone();
             }
             this.app.raycaster.setFromCamera(this.mouse, this.app.camera);
             var pLocal = new THREE.Vector3(0, 0, -1);
@@ -203,6 +209,7 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
             this.actionStart = null;
             this.actionOriginalPosition = null;
             this.actionOriginalScale = null;
+            this.actionOriginalRotate = null;
         };
         return Input;
     })();
