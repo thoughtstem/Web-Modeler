@@ -92,29 +92,32 @@ class Renderer {
                         .append($("<h4>").html("Position"))
                         .append($("<span>").html("X "))
                         .append(this.createInput(
+                            0,
                             selected,
                             selected.position.x,
-                            function () {
-                                selected.position.x = parseFloat($(this).val());
-                                $(this).val(selected.position.x);
+                            function (self) {
+                                selected.position.x = parseFloat($(self).val());
+                                $(self).val(selected.position.x);
                             }
                         ))
                         .append($("<span>").html("Y "))
                         .append(this.createInput(
+                            1,
                             selected,
                             selected.position.y,
-                            function () {
-                                selected.position.y = parseFloat($(this).val());
-                                $(this).val(selected.position.y);
+                            function (self) {
+                                selected.position.y = parseFloat($(self).val());
+                                $(self).val(selected.position.y);
                             }
                         ))
                         .append($("<span>").html("Z "))
                         .append(this.createInput(
+                            2,
                             selected,
                             selected.position.z,
-                            function () {
-                                selected.position.z = parseFloat($(this).val());
-                                $(this).val(selected.position.z);
+                            function (self) {
+                                selected.position.z = parseFloat($(self).val());
+                                $(self).val(selected.position.z);
                             }
                         ))
                 )
@@ -123,29 +126,32 @@ class Renderer {
                         .append($("<h4>").html("Rotation"))
                         .append($("<span>").html("X "))
                         .append(this.createInput(
+                            3,
                             selected,
                             Math.degrees(selected.rotation.x),
-                            function () {
-                                selected.rotation.x = Math.radians(parseFloat($(this).val()));
-                                $(this).val(Math.degrees(selected.rotation.x));
+                            function (self) {
+                                selected.rotation.x = Math.radians(parseFloat($(self).val()));
+                                $(self).val(Math.degrees(selected.rotation.x));
                             }
                         ))
                         .append($("<span>").html("Y "))
                         .append(this.createInput(
+                            4,
                             selected,
                             Math.degrees(selected.rotation.y),
-                            function () {
-                                selected.rotation.y = Math.radians(parseFloat($(this).val()));
-                                $(this).val(Math.degrees(selected.rotation.y));
+                            function (self) {
+                                selected.rotation.y = Math.radians(parseFloat($(self).val()));
+                                $(self).val(Math.degrees(selected.rotation.y));
                             }
                         ))
                         .append($("<span>").html("Z "))
                         .append(this.createInput(
+                            5,
                             selected,
                             Math.degrees(selected.rotation.z),
-                            function () {
-                                selected.rotation.z = Math.radians(parseFloat($(this).val()));
-                                $(this).val(Math.degrees(selected.rotation.z));
+                            function (self) {
+                                selected.rotation.z = Math.radians(parseFloat($(self).val()));
+                                $(self).val(Math.degrees(selected.rotation.z));
                             }
                         ))
                 )
@@ -154,29 +160,32 @@ class Renderer {
                         .append($("<h4>").html("Scale"))
                         .append($("<span>").html("X "))
                         .append(this.createInput(
+                            6,
                             selected,
                             selected.scale.x,
-                            function () {
-                                selected.scale.x = parseFloat($(this).val());
-                                $(this).val(selected.scale.x);
+                            function (self) {
+                                selected.scale.x = parseFloat($(self).val());
+                                $(self).val(selected.scale.x);
                             }
                         ))
                         .append($("<span>").html("Y "))
                         .append(this.createInput(
+                            7,
                             selected,
                             selected.scale.y,
-                            function () {
-                                selected.scale.y = parseFloat($(this).val());
-                                $(this).val(selected.scale.y);
+                            function (self) {
+                                selected.scale.y = parseFloat($(self).val());
+                                $(self).val(selected.scale.y);
                             }
                         ))
                         .append($("<span>").html("Z "))
                         .append(this.createInput(
+                            8,
                             selected,
                             selected.scale.z,
-                            function () {
-                                selected.scale.z = parseFloat($(this).val());
-                                $(this).val(selected.scale.z);
+                            function (self) {
+                                selected.scale.z = parseFloat($(self).val());
+                                $(self).val(selected.scale.z);
                             }
                         ))
                 )
@@ -184,13 +193,25 @@ class Renderer {
         }
     }
 
-    private timer = null;
+    typingTimer:{ [id: number] : any; } = {};
+
     //TODO: Add timer to wait for user to stop typing.
-    private createInput(selected:THREE.Object3D, variable, callback) {
+    private createInput(id:number, selected:THREE.Object3D, variable, callback) {
         return $('<input/>')
             .attr({type: "text", value: variable})
             .addClass("inputField")
-            .keyup(callback)
+            .keyup(function () {
+                var self = this;
+
+                if (this.typingTimer == undefined)
+                    this.typingTimer = {};
+
+                if (this.typingTimer[id] != null)
+                    clearTimeout(this.typingTimer[id]);
+                this.typingTimer[id] = setTimeout(function () {
+                    callback(self)
+                }, 500);
+            })
             .keyup(() => this.renderWorld());
     }
 
