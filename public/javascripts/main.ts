@@ -39,7 +39,7 @@ class App {
          * @type {THREE.PerspectiveCamera}
          */
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-        this.camera.position.set(500, 800, 1300);
+        this.camera.position.set(200, 400, 200);
         this.camera.lookAt(new THREE.Vector3());
 
         // Draw grid
@@ -57,17 +57,18 @@ class App {
 
         var material = new THREE.LineBasicMaterial({color: 0x000000, opacity: 0.2, transparent: true});
 
+        /* for (var vertex in geometry.vertices) {
+         vertex.sub(-20, -50, -50);
+         }*/
+
         var line = new THREE.Line(geometry, material, THREE.LinePieces);
         this.scene.add(line);
 
         var planeGeometry = new THREE.PlaneBufferGeometry(1000, 1000);
         planeGeometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-
         this.plane = new THREE.Mesh(planeGeometry);
         this.plane.visible = false;
         this.scene.add(this.plane);
-
-        //this.world.objects.push(this.plane);
 
         // Lights
         var ambientLight = new THREE.AmbientLight(0x606060);

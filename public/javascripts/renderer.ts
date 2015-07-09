@@ -55,8 +55,9 @@ class Renderer {
         this.panel.empty();
         this.panel.append(
             $("<div>")
-                .append($("<h4>").html("Input Control"))
-                .append($("<p>").html("Middle - Rotate"))
+                .append($("<p>").html("[T] Translate"))
+                .append($("<p>").html("[R] Rotate"))
+                .append($("<p>").html("[S] Scale"))
         )
             .append(
             $("<button>")
