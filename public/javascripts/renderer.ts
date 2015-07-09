@@ -8,6 +8,7 @@
  */
 import $ = require("jquery");
 import THREE = require("three");
+declare var Math:any;
 
 class Renderer {
     /**
@@ -123,28 +124,28 @@ class Renderer {
                         .append($("<span>").html("X "))
                         .append(this.createInput(
                             selected,
-                            selected.rotation.x,
+                            Math.degrees(selected.rotation.x),
                             function () {
-                                selected.rotation.x = parseFloat($(this).val());
-                                $(this).val(selected.rotation.x);
+                                selected.rotation.x = Math.radians(parseFloat($(this).val()));
+                                $(this).val(Math.degrees(selected.rotation.x));
                             }
                         ))
                         .append($("<span>").html("Y "))
                         .append(this.createInput(
                             selected,
-                            selected.rotation.y,
+                            Math.degrees(selected.rotation.y),
                             function () {
-                                selected.rotation.y = parseFloat($(this).val());
-                                $(this).val(selected.rotation.y);
+                                selected.rotation.y = Math.radians(parseFloat($(this).val()));
+                                $(this).val(Math.degrees(selected.rotation.y));
                             }
                         ))
                         .append($("<span>").html("Z "))
                         .append(this.createInput(
                             selected,
-                            selected.rotation.z,
+                            Math.degrees(selected.rotation.z),
                             function () {
-                                selected.rotation.z = parseFloat($(this).val());
-                                $(this).val(selected.rotation.z);
+                                selected.rotation.z = Math.radians(parseFloat($(this).val()));
+                                $(this).val(Math.degrees(selected.rotation.z));
                             }
                         ))
                 )

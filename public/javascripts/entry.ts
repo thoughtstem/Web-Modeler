@@ -21,4 +21,16 @@ if (!havePointerLock) {
     alert("Your browser must support pointer lock. Please try using Chrome or Firefox.");
 }
 
+declare var Math:any;
+
+// Converts from degrees to radians.
+Math.radians = function (degrees) {
+    return degrees * Math.PI / 180;
+};
+
+// Converts from radians to degrees.
+Math.degrees = function (radians) {
+    return radians * 180 / Math.PI;
+};
+
 new App();

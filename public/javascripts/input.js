@@ -178,11 +178,7 @@ define(["require", "exports", "jquery", "underscore", "three", "./box", "mousetr
                         hitObj.select();
                         this.app.renderer.renderUI();
                     }
-                } /*else if (this.selected instanceof Box) {
-                    this.selected.deselect();
-                    this.selected = null;
-                    this.app.renderer.renderUI();
-                }*/
+                }
             }
             this.app.renderer.renderWorld();
         };
